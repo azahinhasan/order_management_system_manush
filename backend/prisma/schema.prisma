@@ -34,16 +34,70 @@ model Users {
   updatedAt DateTime @updatedAt
 
   roleId   Int
-  roleInfo Roles @relation(fields: [roleId], references: [id])
+  roleInfo Roles    @relation(fields: [roleId], references: [id])
+  products Product[]
+  promotions    Promotions[]
 
   @@map("users")
 }
 
+model Product {
+  id          Int    @id @default(autoincrement())
+  name        String
+  description String
+  price       Float
+  weight      Int // in gram
+  quantity    Int
+  isActive    Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  createdBy Int 
+  user      Users @relation(fields: [createdBy], references: [id])
+
+  @@map("products")
+}
+
+model Promotions {
+  id           Int    @id @default(autoincrement())
+  title        String
+  secondTitle  String
+  minimumRange Int // in gram
+  maximumRange Int // in gram
+
+  discountAmount Int
+  perWeight      Int // in gram
+  description    String
+  startDate      DateTime
+  endDate        DateTime
+  isActive    Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  createdBy Int   @unique
+  user      Users @relation(fields: [createdBy], references: [id])
+
+  @@map("promotions")
+}
+
+
+
 model Roles {
   id      Int     @id @default(autoincrement())
-  role    String
-  context String
+  role    Role_names
+  context String 
   Users   Users[]
 
   @@map("roles")
+}
+
+
+enum Role_names {  
+  SUPER_ADMIN
+  ADMIN
+  MANAGER
+  USER
+  DEVELOPER
 }
