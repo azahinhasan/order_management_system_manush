@@ -33,21 +33,22 @@ model Users {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  roleId   Int
-  roleInfo Roles    @relation(fields: [roleId], references: [id])
-  products Product[]
+  roleId        Int
+  roleInfo      Roles    @relation(fields: [roleId], references: [id])
+  products      Products[]
   promotions    Promotions[]
+  orders        Orders[]
 
   @@map("users")
 }
 
-model Product {
+model Products {
   id          Int    @id @default(autoincrement())
   name        String
   description String
-  price       Float
-  weight      Int // in gram
-  quantity    Int
+  currentPrice       Float //per unit_type
+  availableQuantity   Float // in unit_type
+  unit  Unit_types
   isActive    Boolean @default(true)
 
   createdAt DateTime @default(now())
@@ -55,6 +56,7 @@ model Product {
 
   createdBy Int 
   user      Users @relation(fields: [createdBy], references: [id])
+  orderItem OrderItems[]
 
   @@map("products")
 }
@@ -63,11 +65,12 @@ model Promotions {
   id           Int    @id @default(autoincrement())
   title        String
   secondTitle  String
-  minimumRange Int // in gram
-  maximumRange Int // in gram
+  minimumRange Int // in Unit_types
+  maximumRange Int // in Unit_types
+  unit  Unit_types
 
   discountAmount Int
-  perWeight      Int // in gram
+  perQuantity    Float // in Unit_types
   description    String
   startDate      DateTime
   endDate        DateTime
@@ -82,11 +85,37 @@ model Promotions {
   @@map("promotions")
 }
 
+model Orders {
+  id             Int       @id @default(autoincrement())
+  userId         Int
+  user           Users     @relation(fields: [userId], references: [id])
+  items          OrderItems[]
+  totalDiscount  Float
+  grandTotal     Float
+  status         Order_status @default(PENDING)
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
 
+  @@map("orders")
+}
+
+model OrderItems {
+  id          Int     @id @default(autoincrement())
+  orderId     Int
+  order       Orders  @relation(fields: [orderId], references: [id])
+  productId   Int
+  product     Products @relation(fields: [productId], references: [id])
+  orderQuantity Float
+  unitPrice   Float
+  discount    Float  // Discount for the individual product
+  totalPrice  Float  // Quantity * Unit Price - Discount
+
+  @@map("order_items")
+}
 
 model Roles {
   id      Int     @id @default(autoincrement())
-  role    Role_names
+  role    Role_names 
   context String 
   Users   Users[]
 
@@ -100,4 +129,19 @@ enum Role_names {
   MANAGER
   USER
   DEVELOPER
+}
+
+enum Order_status {
+  PENDING
+  PROCESSING
+  COMPLETED
+  CANCELLED
+}
+
+enum Unit_types {
+  KG
+  GRAM
+  LITER
+  METER
+  PIECE
 }

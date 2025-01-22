@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "promotions" ALTER COLUMN "perQuantity" SET DATA TYPE DOUBLE PRECISION;
