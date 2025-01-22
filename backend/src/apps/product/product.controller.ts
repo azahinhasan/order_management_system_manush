@@ -9,6 +9,7 @@ import {
   Req,
   Res,
   UseGuards,
+  Query
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { GetIssuer } from 'src/decorators';
@@ -16,7 +17,8 @@ import { CreateProductDto,UpdateProductDto } from './product.dto';
 import { Request, Response } from 'express';
 import { Users } from '@prisma/client';
 import { AuthGuard, RolesGuard } from '../../guards';
-import { Roles } from 'src/decorators/roles.decorator';
+import { Roles } from '../../decorators/roles.decorator';
+import { PaginationDto } from '../../lib/dtos/pagination.dto';
 
 const allowedRolesMutation = [
   { role: 'MANAGER', context: 'MT' },
@@ -42,8 +44,8 @@ export class ProductController {
   }
 
   @Get('list')
-  async getProducts(@Res() res: Response) {
-    const result = await this.productService.getProducts();
+  async getProducts(@Query() pagination: PaginationDto,@Res() res: Response) {
+    const result = await this.productService.getProducts(pagination);
     return res.status(result.status).json(result);
   }
 

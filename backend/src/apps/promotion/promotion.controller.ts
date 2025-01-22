@@ -15,7 +15,7 @@ import { CreatePromotionDto, UpdatePromotionDto } from './promotion.dto';
 import { Response } from 'express';
 import { Users } from '@prisma/client';
 import { AuthGuard, RolesGuard } from '../../guards';
-import { Roles } from 'src/decorators/roles.decorator';
+import { Roles } from '../../decorators/roles.decorator';
 
 const allowedRolesMutation = [
   { role: 'MANAGER', context: 'MT' },

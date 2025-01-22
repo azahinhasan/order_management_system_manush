@@ -3,6 +3,7 @@ import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { ActionLogger } from 'utils/action-logger';
 import { ErrorLogger } from 'utils/error-logger';
 import { CreateOrderDto, UpdateOrderDto } from './order-management.dto';
+import { PaginationDto } from '../../lib/dtos/pagination.dto';
 
 @Injectable()
 export class OrderManagementService {
@@ -60,15 +61,22 @@ export class OrderManagementService {
     }
   }
   
-  async getOrders() {
+  async getOrders(pagination: PaginationDto) {
     try {
+      const { page, limit } = pagination;
+      const skip = (page - 1) * limit;
+
       const orders = await this.prisma.orders.findMany({
         include: { items: true },
+        skip,
+        take: limit,
       });
 
       return {
         status: 200,
         message: 'Orders retrieved successfully',
+        page,
+        limit,
         data: orders,
       };
     } catch (error) {

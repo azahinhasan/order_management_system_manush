@@ -8,6 +8,7 @@ import {
   Param,
   Res,
   UseGuards,
+  Query
 } from '@nestjs/common';
 import { OrderManagementService } from './order-management.service';
 import { GetIssuer } from 'src/decorators';
@@ -15,7 +16,8 @@ import { CreateOrderDto, UpdateOrderDto } from './order-management.dto';
 import { Response } from 'express';
 import { Users } from '@prisma/client';
 import { AuthGuard, RolesGuard } from '../../guards';
-import { Roles } from 'src/decorators/roles.decorator';
+import { Roles } from '../../decorators/roles.decorator';
+import { PaginationDto } from '../../lib/dtos/pagination.dto';
 
 const allowedRolesMutation = [
   { role: 'MANAGER', context: 'MT' },
@@ -41,8 +43,8 @@ export class OrderManagementController {
   }
 
   @Get('list')
-  async getOrders(@Res() res: Response) {
-    const result = await this.orderService.getOrders();
+  async getOrders(@Query() pagination: PaginationDto,@Res() res: Response) {
+    const result = await this.orderService.getOrders(pagination);
     return res.status(result.status).json(result);
   }
 
