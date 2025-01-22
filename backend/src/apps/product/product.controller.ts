@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { GetIssuer } from 'src/decorators';
-import { ProductDto } from './product.dto';
+import { CreateProductDto,UpdateProductDto } from './product.dto';
 import { Request, Response } from 'express';
 import { Users } from '@prisma/client';
 import { AuthGuard, RolesGuard } from '../../guards';
@@ -20,23 +20,22 @@ import { Roles } from 'src/decorators/roles.decorator';
 
 const allowedRolesMutation = [
   { role: 'MANAGER', context: 'MT' },
-  { role: 'SUPER_ADMIN', context: 'MT' },
   { role: 'ADMIN', context: 'MT' },
   { role: 'DEVELOPER', context: 'MT' },
 ];
 
 @Controller('product')
 @UseGuards(AuthGuard, RolesGuard)
+@Roles({ role: 'SUPER_ADMIN', context: 'MT' })
 export class ProductController {
   constructor(private productService: ProductService) {}
 
   @Post()
   @Roles(...allowedRolesMutation)
   async createProduct(
-    @Body() dto: ProductDto,
+    @Body() dto: CreateProductDto,
     @GetIssuer() issuer: any,
     @Res() res: Response,
-    @Req() req: Request,
   ) {
     const result = await this.productService.createProduct(dto, issuer.user.id);
     return res.status(result.status).json(result);
@@ -58,7 +57,7 @@ export class ProductController {
   @Roles(...allowedRolesMutation)
   async updateProduct(
     @Param('id') id: number,
-    @Body() dto: ProductDto,
+    @Body() dto: UpdateProductDto,
     @GetIssuer() issuer: Users,
     @Res() res: Response,
   ) {

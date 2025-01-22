@@ -3,7 +3,7 @@ import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { RedisService } from 'src/modules/redis/redis.service';
 import { ActionLogger } from 'utils/action-logger';
 import { ErrorLogger } from 'utils/error-logger';
-import { ProductDto } from './product.dto';
+import { CreateProductDto, UpdateProductDto } from './product.dto';
 
 @Injectable()
 export class ProductService {
@@ -15,15 +15,11 @@ export class ProductService {
   ) {}
 
   // Create a new product
-  async createProduct(dto: ProductDto, userId: number) {
+  async createProduct(dto: CreateProductDto, userId: number) {
     try {
       const product = await this.prisma.product.create({
         data: {
-          name: dto.name,
-          description: dto.description,
-          price: dto.price,
-          weight: dto.weight,
-          quantity: dto.quantity,
+          ...dto,
           createdBy: userId,
         },
       });
@@ -104,16 +100,13 @@ export class ProductService {
   }
 
   // Update a product
-  async updateProduct(productId: number, dto: ProductDto, userId: number) {
+  async updateProduct(productId: number, dto: UpdateProductDto, userId: number) {
     try {
       const product = await this.prisma.product.update({
         where: { id: productId },
         data: {
-          name: dto.name,
-          description: dto.description,
-          price: dto.price,
-          weight: dto.weight,
-          quantity: dto.quantity,
+          ...dto,
+          updatedAt: new Date(),
         },
       });
 

@@ -58,7 +58,6 @@ export class AuthGuard implements CanActivate {
         );
         response.setHeader('x-refresh-token', refreshTokenId);
       }
-      console.log(( decoded.decoded));
       request.user = decoded.decoded;
     } catch (error) {
       throw new UnauthorizedException();

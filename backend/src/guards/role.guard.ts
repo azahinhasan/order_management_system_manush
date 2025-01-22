@@ -15,11 +15,12 @@ export class RolesGuard implements CanActivate {
     const requiredRoles = this.reflector.getAllAndMerge<
       RoleMetaDataItemsShape[]
     >('roles', [context.getHandler(), context.getClass()]);
-    if (!requiredRoles) {
+    const { user } = context.switchToHttp().getRequest()
+
+
+    if (!requiredRoles||requiredRoles.length===0||user.roleInfo?.role==='SUPER_ADMIN') {
       return true;
     }   
-    console.log(requiredRoles);
-
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),
       context.getClass(),
@@ -27,9 +28,7 @@ export class RolesGuard implements CanActivate {
     if (isPublic) {
       return true;
     }
-
-    const { user } = context.switchToHttp().getRequest();
-
+    
     return requiredRoles.some(
       (role) =>
         user.roleInfo?.role === role.role &&
