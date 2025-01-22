@@ -76,7 +76,7 @@ model Promotions {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  createdBy Int   @unique
+  createdBy Int 
   user      Users @relation(fields: [createdBy], references: [id])
 
   @@map("promotions")

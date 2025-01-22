@@ -24,6 +24,9 @@ export class PromotionService {
         },
       });
 
+      // Invalidate Redis cache when a new promotion is created
+      await this.redis.delete('promotion', 'ACTIVE_PROMOTIONS');
+
       await this.actionLogger.logAction(
         {
           referenceId: promotion.id,
@@ -50,11 +53,54 @@ export class PromotionService {
     }
   }
 
+  async getAvailablePromotions() {
+    try {
+      const cachedPromotions = await this.redis.get(
+        'promotion',
+        'ACTIVE_PROMOTIONS',
+      );
+      if (cachedPromotions) {
+        return {
+          status: 200,
+          message: 'Promotions retrieved successfully (from cache)',
+          data: JSON.parse(cachedPromotions),
+        };
+      }
+
+      // If no cache, fetch active promotions from the database
+      const currentDate = new Date();
+      const promotions = await this.prisma.promotions.findMany({
+        where: {
+          isActive: true,
+          endDate: { gte: currentDate },
+        },
+      });
+
+      // Cache the promotions for future requests
+      promotions.length>0 && await this.redis.set(
+        'promotion',
+        'ACTIVE_PROMOTIONS',
+        JSON.stringify(promotions),
+      );
+
+      return {
+        status: 200,
+        message: 'Promotions retrieved successfully',
+        data: promotions,
+      };
+    } catch (error) {
+      // Log the error
+      return await this.errorLogger.errorlogger({
+        errorMessage: 'An error occurred while retrieving promotions',
+        errorStack: error,
+        context: 'PromotionService - getPromotions',
+      });
+    }
+  }
+
   async getPromotions() {
     try {
-      const promotions = await this.prisma.promotions.findMany({
-        where: { isActive: true },
-      });
+      const promotions = await this.prisma.promotions.findMany({});
 
       return {
         status: 200,
@@ -106,10 +152,15 @@ export class PromotionService {
       const updatedPromotion = await this.prisma.promotions.update({
         where: { id: promotionId },
         data: {
-          ...dto,
+          title: dto.title,
+          startDate: dto.startDate,
+          endDate: dto.endDate,
           updatedAt: new Date(),
         },
       });
+
+      // Invalidate Redis cache after update
+      await this.redis.delete('promotion', 'ACTIVE_PROMOTIONS');
 
       await this.actionLogger.logAction(
         {
@@ -142,6 +193,9 @@ export class PromotionService {
       const promotion = await this.prisma.promotions.delete({
         where: { id: promotionId },
       });
+
+      // Invalidate Redis cache after delete
+      await this.redis.delete('promotion', 'ACTIVE_PROMOTIONS');
 
       await this.actionLogger.logAction(
         {

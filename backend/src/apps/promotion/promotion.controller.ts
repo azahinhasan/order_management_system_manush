@@ -45,6 +45,12 @@ export class PromotionController {
     return res.status(result.status).json(result);
   }
 
+  @Get('list/available')
+  async getAvailablePromotions(@Res() res: Response) {
+    const result = await this.promotionService.getAvailablePromotions();
+    return res.status(result.status).json(result);
+  }
+
   @Get(':id')
   async getPromotionById(@Param('id') id: number, @Res() res: Response) {
     const result = await this.promotionService.getPromotionById(Number(id));
