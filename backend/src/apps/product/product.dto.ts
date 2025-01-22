@@ -1,4 +1,12 @@
-import { IsString, IsNumber, IsOptional, IsBoolean } from 'class-validator';
+import { IsString,Min, IsNumber, IsOptional, IsBoolean,IsEnum } from 'class-validator';
+
+enum UnitTypes {
+  KG = 'KG',
+  GRAM = 'GRAM',
+  LITER = 'LITER',
+  METER = 'METER',
+  PIECE = 'PIECE',
+}
 
 export class ProductDtoQuery {
   @IsString()
@@ -8,7 +16,7 @@ export class ProductDtoQuery {
   description: string;
 
   @IsNumber()
-  price: number;
+  currentPrice: number;
 
   @IsNumber()
   weight: number;
@@ -16,11 +24,14 @@ export class ProductDtoQuery {
   @IsNumber()
   quantity: number;
 
+  @IsEnum(UnitTypes)
+  @IsOptional()
+  unit?: UnitTypes;
+
   @IsBoolean()
   @IsOptional()
   isActive?: boolean;
 }
-
 
 export class CreateProductDto {
   @IsString()
@@ -30,13 +41,15 @@ export class CreateProductDto {
   description: string;
 
   @IsNumber()
-  price: number;
+  @Min(0)
+  currentPrice: number;
 
   @IsNumber()
-  weight: number;
+  @Min(0)
+  availableQuantity: number;
 
-  @IsNumber()
-  quantity: number;
+  @IsEnum(UnitTypes)
+  unit: UnitTypes;
 
   @IsBoolean()
   @IsOptional()
@@ -54,17 +67,20 @@ export class UpdateProductDto {
 
   @IsNumber()
   @IsOptional()
-  price?: number;
+  @Min(0)
+  currentPrice?: number;
 
   @IsNumber()
   @IsOptional()
-  weight?: number;
+  @Min(0)
+  availableQuantity?: number;
 
-  @IsNumber()
-  @IsOptional()
-  quantity?: number;
+  // @IsEnum(UnitTypes)
+  // @IsOptional()
+  // unit?: UnitTypes;
 
   @IsBoolean()
   @IsOptional()
   isActive?: boolean;
 }
+

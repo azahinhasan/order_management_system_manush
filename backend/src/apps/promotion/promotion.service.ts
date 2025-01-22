@@ -20,7 +20,7 @@ export class PromotionService {
       const promotion = await this.prisma.promotions.create({
         data: {
           ...dto,
-          createdBy: userId,
+          createdBy: userId
         },
       });
 

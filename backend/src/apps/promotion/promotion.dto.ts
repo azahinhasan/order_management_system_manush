@@ -1,4 +1,21 @@
-import { IsBoolean, IsDate, IsInt, IsOptional, IsString, Min, MaxLength } from 'class-validator';
+import {
+  IsBoolean,
+  IsDateString,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Min,
+  MaxLength,
+  IsEnum
+} from 'class-validator';
+
+enum UnitTypes {
+  KG = 'KG',
+  GRAM = 'GRAM',
+  LITER = 'LITER',
+  METER = 'METER',
+  PIECE = 'PIECE',
+}
 
 export class CreatePromotionDto {
   @IsString()
@@ -9,35 +26,37 @@ export class CreatePromotionDto {
   @MaxLength(255)
   secondTitle: string;
 
-  @IsInt()
+  @IsNumber()
   @Min(0)
   minimumRange: number;
 
-  @IsInt()
+  @IsNumber()
   @Min(0)
   maximumRange: number;
 
-  @IsInt()
+  @IsNumber()
   @Min(0)
   discountAmount: number;
 
-  @IsInt()
+  @IsNumber()
   @Min(0)
-  perWeight: number;
+  perQuantity: number;
 
   @IsString()
-  @MaxLength(1000)
   description: string;
 
-  @IsString()
+  @IsDateString()
   startDate: string;
 
-  @IsString()
+  @IsDateString()
   endDate: string;
 
   @IsOptional()
   @IsBoolean()
   isActive?: boolean;
+
+  @IsEnum(UnitTypes)
+  unit: UnitTypes;
 }
 
 export class UpdatePromotionDto {
@@ -48,10 +67,44 @@ export class UpdatePromotionDto {
 
   @IsOptional()
   @IsString()
-  startDate?: string;
+  @MaxLength(255)
+  secondTitle?: string;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  minimumRange?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  maximumRange?: number;
+
+  @IsEnum(UnitTypes)
+  @IsOptional()
+  unit?: UnitTypes;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  discountAmount?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  perQuantity?: number;
 
   @IsOptional()
   @IsString()
+  @MaxLength(1000)
+  description?: string;
+
+  @IsOptional()
+  @IsDateString()
+  startDate?: string;
+
+  @IsOptional()
+  @IsDateString()
   endDate?: string;
 
   @IsOptional()

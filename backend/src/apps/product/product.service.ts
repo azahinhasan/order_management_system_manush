@@ -17,7 +17,7 @@ export class ProductService {
   // Create a new product
   async createProduct(dto: CreateProductDto, userId: number) {
     try {
-      const product = await this.prisma.product.create({
+      const product = await this.prisma.products.create({
         data: {
           ...dto,
           createdBy: userId,
@@ -53,7 +53,7 @@ export class ProductService {
   // Get all products
   async getProducts() {
     try {
-      const products = await this.prisma.product.findMany({
+      const products = await this.prisma.products.findMany({
         where: { isActive: true },
       });
 
@@ -74,7 +74,7 @@ export class ProductService {
   // Get a single product by ID
   async getProductById(productId: number) {
     try {
-      const product = await this.prisma.product.findUnique({
+      const product = await this.prisma.products.findUnique({
         where: { id: productId },
       });
 
@@ -102,7 +102,7 @@ export class ProductService {
   // Update a product
   async updateProduct(productId: number, dto: UpdateProductDto, userId: number) {
     try {
-      const product = await this.prisma.product.update({
+      const product = await this.prisma.products.update({
         where: { id: productId },
         data: {
           ...dto,
@@ -139,7 +139,7 @@ export class ProductService {
   // Delete a product
   async deleteProduct(productId: number, userId: number) {
     try {
-      const product = await this.prisma.product.delete({
+      const product = await this.prisma.products.delete({
         where: { id: productId },
       });
 
