@@ -48,15 +48,18 @@ export class ProductService {
     }
   }
 
-  async getProducts(pagination: PaginationDto) {
+  async getProducts(pagination: PaginationDto, status: boolean) {
     try {
       const { page, limit } = pagination;
       const skip = (page - 1) * limit;
 
       const products = await this.prisma.products.findMany({
-        where: { isActive: true },
+        where: status ? { isActive: true }:{},
         skip,
         take: limit,
+      });
+      const totalCount = await this.prisma.products.count({
+        where:status ? { isActive: true }:{},
       });
 
       return {
@@ -64,7 +67,8 @@ export class ProductService {
         message: 'Products retrieved successfully',
         page,
         limit,
-        data: products
+        totalCount,
+        products,
       };
     } catch (error) {
       return await this.errorLogger.errorlogger({
@@ -101,7 +105,11 @@ export class ProductService {
     }
   }
 
-  async updateProduct(productId: number, dto: UpdateProductDto, userId: number) {
+  async updateProduct(
+    productId: number,
+    dto: UpdateProductDto,
+    userId: number,
+  ) {
     try {
       const product = await this.prisma.products.update({
         where: { id: productId },

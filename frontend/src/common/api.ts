@@ -1,4 +1,5 @@
 import Cookies from "js-cookie";
+import { ICreateProductDto, IUpdateProductDto } from "./interface";
 
 const apiUrl = import.meta.env.VITE_SERVER_ENDPOINT + `/api/v1`;
 
@@ -17,7 +18,7 @@ export const loginApi = async (body: {
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.message || "Failed to login");
+    throw new Error(data.message || "Failed");
   }
 
   return data;
@@ -41,45 +42,47 @@ export const productListApi = async (page?: number, limit?: number) => {
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.message || "Failed to login");
+    throw new Error(data.message || "Failed");
   }
 
   return data;
 };
 
-export const editProductApi = async (body: any, id: number) => {
+export const editProductApi = async (body: IUpdateProductDto, id: number) => {
   const response = await fetch(`${apiUrl}/product/${id}`, {
     method: "PUT",
-    body: JSON.stringify(body),
+    body:JSON.stringify(body),
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${Cookies.get("tokenId")}`,
+      authorization: `Bearer ${Cookies.get("tokenId")}`,
+      "x-refresh-token": `${Cookies.get("refreshTokenId")}`,
     },
   });
 
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.message || "Failed to login");
+    throw new Error(data.message || "Failed");
   }
 
   return data;
 };
 
-export const createProductApi = async (body: any) => {
+export const createProductApi = async (body: ICreateProductDto) => {
   const response = await fetch(`${apiUrl}/product`, {
     method: "POST",
     body: JSON.stringify(body),
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${Cookies.get("tokenId")}`,
+      authorization: `Bearer ${Cookies.get("tokenId")}`,
+      "x-refresh-token": `${Cookies.get("refreshTokenId")}`,
     },
   });
 
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.message || "Failed to login");
+    throw new Error(data.message || "Failed");
   }
 
   return data;
@@ -97,7 +100,7 @@ export const deleteProductApi = async (id: number) => {
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.message || "Failed to login");
+    throw new Error(data.message || "Failed");
   }
 
   return data;

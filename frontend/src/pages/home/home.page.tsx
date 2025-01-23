@@ -11,7 +11,7 @@ import * as Yup from "yup";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "../../context/snack-bar.context";
-import CustomFields from "../../components/CustomFields";
+import CustomFields from "../../common/components/CustomFields";
 import { loginApi } from "../../common/api";
 
 

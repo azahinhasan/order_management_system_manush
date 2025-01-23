@@ -9,11 +9,11 @@ import {
   Req,
   Res,
   UseGuards,
-  Query
+  Query,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { GetIssuer } from 'src/decorators';
-import { CreateProductDto,UpdateProductDto } from './product.dto';
+import { CreateProductDto, UpdateProductDto } from './product.dto';
 import { Request, Response } from 'express';
 import { Users } from '@prisma/client';
 import { AuthGuard, RolesGuard } from '../../guards';
@@ -44,8 +44,15 @@ export class ProductController {
   }
 
   @Get('list')
-  async getProducts(@Query() pagination: PaginationDto,@Res() res: Response) {
-    const result = await this.productService.getProducts(pagination);
+  async getProducts(
+    @Query() pagination: PaginationDto,
+    @Res() res: Response,
+    @GetIssuer() issuer: any,
+  ) {
+    const result = await this.productService.getProducts(
+      pagination,
+      issuer.user.roleInfo.role === 'USER',
+    );
     return res.status(result.status).json(result);
   }
 

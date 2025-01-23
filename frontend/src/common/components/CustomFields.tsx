@@ -5,7 +5,7 @@ interface CustomFieldsProps extends Omit<TextFieldProps, 'variant'> {
   fieldType?: "text" | "password" | "textarea" | "dropdown" | "number";
   options?: { value: string | number; label: string }[];
   label?: string;
-  helperText: string | undefined;
+  helperText: any;
   error: boolean | undefined;
 }
 

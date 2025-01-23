@@ -22,11 +22,11 @@ export class ProductDtoQuery {
   weight: number;
 
   @IsNumber()
-  quantity: number;
+  availableQuantity: number;
 
   @IsEnum(UnitTypes)
   @IsOptional()
-  unit?: UnitTypes;
+  unit: UnitTypes;
 
   @IsBoolean()
   @IsOptional()

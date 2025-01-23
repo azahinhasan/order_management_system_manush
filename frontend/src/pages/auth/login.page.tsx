@@ -10,7 +10,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import Cookies from "js-cookie";
 import { useSnackbar } from "../../context/snack-bar.context";
-import CustomFields from "../../components/CustomFields";
+import CustomFields from "../../common/components/CustomFields";
 import { loginApi } from "../../common/api";
 
 // Example login function that can be used with TanStack Query
