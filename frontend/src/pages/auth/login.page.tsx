@@ -9,7 +9,6 @@ import {
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Cookies from "js-cookie";
-import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "../../context/snack-bar.context";
 import CustomFields from "../../components/CustomFields";
 import { loginApi } from "../../common/api";
@@ -27,7 +26,7 @@ const Login = () => {
       if (res.status===200) {
         Cookies.set("refreshTokenId", res.data.refreshTokenId);
         Cookies.set("tokenId", res.data.tokenId);
-        Cookies.set("roleInfo", res.data.user.roleInfo.role);
+        Cookies.set("role", res.data.user.roleInfo.role);
 
         window.location.reload();
       } else {

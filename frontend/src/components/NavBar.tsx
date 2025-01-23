@@ -17,6 +17,8 @@ const NavBar: React.FC = () => {
   const handleLogout = () => {
     Cookies.remove("refreshTokenId");
     Cookies.remove("tokenId");
+    Cookies.remove("role");
+
     console.log("Logout clicked");
     window.location.reload();
   };
@@ -38,7 +40,7 @@ const NavBar: React.FC = () => {
   const menuItems = [
     { text: "Home", path: "/home" },
     { text: "Orders", path: "/orders" },
-    { text: "Product Manage", path: "/my-manage" },
+    { text: "Product Manage", path: "/product-management" },
   ];
 
   return (
