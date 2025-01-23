@@ -11,23 +11,23 @@ export class ActionLogger {
     issuerId,
   ) {
     try {
-      // await this.prisma.actionLogs
-      //   .create({
-      //     data: {
-      //       referenceId,
-      //       refereceType,
-      //       action,
-      //       context,
-      //       description,
-      //       additionalInfo,
-      //       issuerId,
-      //     },
-      //   })
-      //   .then(() => {
-      //     console.log(
-      //       '--------------------------Action logged successfully--------------------------',
-      //     );
-      //   });
+      await this.prisma.actionLog
+        .create({
+          data: {
+            referenceId,
+            refereceType,
+            action,
+            context,
+            description,
+            additionalInfo,
+            issuerId,
+          },
+        })
+        .then(() => {
+          console.log(
+            '--------------------------Action logged successfully - '+ refereceType + ' - '+action +'--------------------------',
+          );
+        });
     } catch (error) {
       console.log(
         '--------------------------Action not logged--------------------------',

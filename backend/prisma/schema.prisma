@@ -122,6 +122,21 @@ model Roles {
   @@map("roles")
 }
 
+model ActionLog {
+  id             String   @id @default(uuid())
+  referenceId    Int?
+  refereceType   String?
+  action         String
+  context        String?
+  description    String?
+  additionalInfo String?
+  issuerId       Int
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+   @@map("actionLog")
+}
+
 
 enum Role_names {  
   SUPER_ADMIN
