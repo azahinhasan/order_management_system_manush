@@ -23,13 +23,13 @@ import PromotionDialog from "./components/PromotionDialog";
 const PromotionList = () => {
   const { showAlert } = useSnackbar();
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(3);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedPromotion, setSelectedPromotion] = useState(null);
 
   const { data, error, isLoading, refetch } = useQuery({
     queryKey: ["promotionList"],
-    queryFn: () => promotionListApi(),
+    queryFn: () => promotionListApi(page+1,rowsPerPage),
   });
 
   const statusUpdate = useMutation<
@@ -59,7 +59,7 @@ const PromotionList = () => {
   console.log(data);
   return (
     <div>
-      <CardContent style={{marginTop: "20px"}}>
+      <CardContent style={{ marginTop: "20px" }}>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant="h5" gutterBottom>
             Promotion List
@@ -82,9 +82,10 @@ const PromotionList = () => {
             <TableHead>
               <TableRow>
                 <TableCell>Title</TableCell>
-                <TableCell>Price per Unit</TableCell>
+                <TableCell>Discount</TableCell>
                 <TableCell>Range</TableCell>
                 <TableCell>Offer Date</TableCell>
+                <TableCell>Type</TableCell>
                 <TableCell>Active</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
@@ -93,11 +94,30 @@ const PromotionList = () => {
               {data.promotions?.map((promotion: any) => (
                 <TableRow key={promotion.id}>
                   <TableCell>{promotion.title}</TableCell>
-                  <TableCell>{promotion.discountAmount} bdt / {promotion.perQuantity} {promotion.unit.toLowerCase()}</TableCell>
-                  <TableCell>{promotion.minimumRange} - {promotion.maximumRange}</TableCell>
                   <TableCell>
-                    {promotion.startDate.split("T")[0]} to {promotion.endDate.split("T")[0]}
+                    {promotion.type === "WEIGHTED" ? (
+                      <>
+                        {promotion.discountAmount || "-"} BDT /{" "}
+                        {promotion.perQuantity || "-"}{" "}
+                        {promotion?.unit?.toLowerCase() || "-"}
+                      </>
+                    ) : promotion.type === "FIXED" ? (
+                      `${promotion.discountAmount || "-"} BDT`
+                    ) : promotion.type === "PERCENTAGE" ? (
+                      `${promotion.discountAmount || "-"}%`
+                    ) : (
+                      "-"
+                    )}
                   </TableCell>
+                  <TableCell>
+                    {promotion.minimumRange || "-"} -{" "}
+                    {promotion.maximumRange || "-"}
+                  </TableCell>
+                  <TableCell>
+                    {promotion.startDate.split("T")[0]} to{" "}
+                    {promotion.endDate.split("T")[0]}
+                  </TableCell>
+                  <TableCell>{promotion.type}</TableCell>
                   <TableCell>
                     <Switch
                       checked={promotion.isActive}
@@ -128,14 +148,14 @@ const PromotionList = () => {
           </Table>
         </TableContainer>
         <TablePagination
-          rowsPerPageOptions={[3, 20, 30]}
+          rowsPerPageOptions={[5, 20, 30]}
           component="div"
           count={data.totalCount}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={(_, newPage) => setPage(newPage)}
           onRowsPerPageChange={(event) =>
-            setRowsPerPage(parseInt(event.target.value, 3))
+            setRowsPerPage(parseInt(event.target.value, 5))
           }
         />
       </CardContent>

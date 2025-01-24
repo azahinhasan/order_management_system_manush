@@ -1,13 +1,7 @@
 import { useState, useEffect } from "react";
-import {
-  Card,
-  CardContent,
-  Typography,
-  CircularProgress,
-} from "@mui/material";
+import { Card, CardContent, Typography, CircularProgress } from "@mui/material";
 import Slider from "react-slick"; // Import react-slick
 import { useProductContext } from "../../context/product.context";
-import PromotionList from "../promotion-management/productList.page";
 import ProductForOrder from "./component/productForOrder";
 
 // Slick carousel settings
@@ -35,17 +29,16 @@ const settings = {
   ],
 };
 
-// Colors array containing the three specific colors
 const colors = ["#b05e58", "#7967c7", "#8f4a66"];
 
-// Function to get a random color from the above array
 const getRandomColor = () => {
   return colors[Math.floor(Math.random() * colors.length)];
 };
 
 const Home = () => {
   const [openDialog, setOpenDialog] = useState(false);
-  const { promotionData, promotionLoading, promotionError } = useProductContext();
+  const { promotionData, promotionLoading, promotionError } =
+    useProductContext();
 
   useEffect(() => {
     console.log(promotionData, "promotionData");
@@ -74,12 +67,17 @@ const Home = () => {
                 <Card
                   sx={{
                     maxWidth: 345,
+                    minHeight: 190,
                     margin: "0 auto",
                     border: `2px solid ${randomBorderColor}`,
                   }}
                 >
                   <CardContent>
-                    <Typography variant="h5" component="div" style={{ color: `${randomBorderColor}` }}>
+                    <Typography
+                      variant="h5"
+                      component="div"
+                      style={{ color: `${randomBorderColor}` }}
+                    >
                       {promotion.title}
                     </Typography>
                     <Typography variant="subtitle1">
@@ -87,14 +85,36 @@ const Home = () => {
                     </Typography>
                     <hr />
                     <Typography variant="body2" style={{ fontWeight: "bold" }}>
-                      Discount: {promotion.discountAmount} bdt per {promotion.perQuantity}{" "}
-                      {promotion.unit.toLowerCase()}
+                      {promotion.type === "WEIGHTED" ? (
+                        <>
+                          Discount: {promotion.discountAmount || "-"} BDT per{" "}
+                          {promotion.perQuantity || "-"}{" "}
+                          {promotion.unit?.toLowerCase() || "-"}
+                        </>
+                      ) : promotion.type === "FIXED" ? (
+                        <>
+                          Discount: {promotion.discountAmount || "-"} BDT
+                          (Fixed)
+                        </>
+                      ) : promotion.type === "PERCENTAGE" ? (
+                        <>Discount: {promotion.discountAmount || "-"}% off</>
+                      ) : (
+                        <>No discount available</>
+                      )}
                     </Typography>
+                    {promotion.type === "WEIGHTED" && (
+                      <>
+                        <hr />
+                        <Typography variant="body2">
+                          Applicable on orders between <br />{" "}
+                          {promotion.minimumRange} {promotion.unit.toLowerCase()} -{" "}
+                          {promotion.maximumRange||"unlimited"} {promotion.unit.toLowerCase()}
+                        </Typography>
+                      </>
+                    )}
                     <hr />
                     <Typography variant="body2">
-                      Applicable on orders between <br /> {promotion.minimumRange}
-                      {promotion.unit.toLowerCase()} - {promotion.maximumRange}
-                      {promotion.unit.toLowerCase()}
+                      <b>Until</b> {promotion.endDate.split("T")[0]}
                     </Typography>
                   </CardContent>
                 </Card>
@@ -103,10 +123,7 @@ const Home = () => {
           })}
         </Slider>
       )}
-
-      <ProductForOrder/>
-
-
+      <ProductForOrder />
     </div>
   );
 };

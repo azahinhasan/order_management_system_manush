@@ -56,7 +56,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ open, onClose, product,re
       description: product?.description ?? "",
       currentPrice: product?.currentPrice ?? "",
       availableQuantity: product?.availableQuantity ?? "",
-      unit: product?.unit ?? "KG",
+      unit: product?.unit ?? "GRAM",
     },
     enableReinitialize: true,
     validationSchema: Yup.object({
@@ -119,7 +119,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ open, onClose, product,re
               fullWidth
               label="Unit"
               margin="dense"
-              disabled={product}
+              disabled={true}
               options={unitOptions.map((option) => ({
                 value: option,
                 label: option,

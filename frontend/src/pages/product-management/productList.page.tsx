@@ -23,7 +23,7 @@ import ProductDialog from "./components/ProductDialog";
 const ProductList = () => {
   const { showAlert } = useSnackbar();
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(3);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
@@ -128,14 +128,14 @@ const ProductList = () => {
           </Table>
         </TableContainer>
         <TablePagination
-          rowsPerPageOptions={[3, 20, 30]}
+          rowsPerPageOptions={[5, 20, 30]}
           component="div"
           count={data.totalCount}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={(_, newPage) => setPage(newPage)}
           onRowsPerPageChange={(event) =>
-            setRowsPerPage(parseInt(event.target.value, 3))
+            setRowsPerPage(parseInt(event.target.value, 5))
           }
         />
       </CardContent>

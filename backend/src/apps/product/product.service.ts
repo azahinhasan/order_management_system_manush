@@ -54,12 +54,15 @@ export class ProductService {
       const skip = (page - 1) * limit;
 
       const products = await this.prisma.products.findMany({
-        where: status ? { isActive: true }:{},
+        where: status ? { isActive: true } : {},
         skip,
         take: limit,
+        orderBy: {
+          createdAt: 'desc',
+        },
       });
       const totalCount = await this.prisma.products.count({
-        where:status ? { isActive: true }:{},
+        where: status ? { isActive: true } : {},
       });
 
       return {

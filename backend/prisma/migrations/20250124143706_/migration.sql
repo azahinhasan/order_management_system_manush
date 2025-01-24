@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "promotions" ALTER COLUMN "minimumRange" DROP NOT NULL,
+ALTER COLUMN "maximumRange" DROP NOT NULL,
+ALTER COLUMN "perQuantity" DROP NOT NULL,
+ALTER COLUMN "unit" DROP NOT NULL;

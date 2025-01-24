@@ -74,6 +74,9 @@ export class PromotionService {
           isActive: true,
           endDate: { gte: currentDate },
         },
+        orderBy: {
+          createdAt: 'desc',
+        },
       });
 
       // Cache the promotions for future requests
@@ -106,6 +109,9 @@ export class PromotionService {
       const promotions = await this.prisma.promotions.findMany({
         skip,
         take: limit,
+        orderBy: {
+          createdAt: 'desc',
+        },
       });
 
       const totalCount = await this.prisma.promotions.count({});

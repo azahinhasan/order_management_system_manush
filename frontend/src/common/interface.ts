@@ -7,6 +7,13 @@ enum UnitTypes {
   PIECE = 'PIECE',
   PACK = 'PACK',
 }
+
+enum PromotionTypes {
+  WEIGHTED = 'WEIGHTED',
+  FIXED = 'FIXED',
+  PERCENTAGE = 'PERCENTAGE'
+}
+
 export interface IUpdateProductDto {
   name?: string;
   description?: string;
@@ -45,6 +52,7 @@ export interface ICreatePromotionDto {
   endDate: string;
   isActive?: boolean;
   unit: UnitTypes;
+  type: PromotionTypes
 }
 
 export interface IUpdatePromotionDto {

@@ -17,6 +17,13 @@ enum UnitTypes {
   PIECE = 'PIECE',
 }
 
+enum PromotionTypes {
+  WEIGHTED = 'WEIGHTED',
+  FIXED = 'FIXED',
+  PERCENTAGE = 'PERCENTAGE'
+}
+
+
 export class CreatePromotionDto {
   @IsString()
   @MaxLength(255)
@@ -28,11 +35,13 @@ export class CreatePromotionDto {
 
   @IsNumber()
   @Min(0)
-  minimumRange: number;
+  @IsOptional()
+  minimumRange?: number;
 
   @IsNumber()
   @Min(0)
-  maximumRange: number;
+  @IsOptional()
+  maximumRange?: number;
 
   @IsNumber()
   @Min(0)
@@ -40,7 +49,8 @@ export class CreatePromotionDto {
 
   @IsNumber()
   @Min(0)
-  perQuantity: number;
+  @IsOptional()
+  perQuantity?: number;
 
   @IsString()
   description: string;
@@ -51,12 +61,16 @@ export class CreatePromotionDto {
   @IsDateString()
   endDate: string;
 
+  @IsString()
+  type: PromotionTypes;
+
   @IsOptional()
   @IsBoolean()
   isActive?: boolean;
 
   @IsEnum(UnitTypes)
-  unit: UnitTypes;
+  @IsOptional()
+  unit?: UnitTypes;
 }
 
 export class UpdatePromotionDto {

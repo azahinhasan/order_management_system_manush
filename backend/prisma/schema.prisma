@@ -65,17 +65,18 @@ model Promotions {
   id           Int    @id @default(autoincrement())
   title        String
   secondTitle  String
-  minimumRange Int // in Unit_types
-  maximumRange Int // in Unit_types
-  unit  Unit_types
+  minimumRange Int? // in Unit_types
+  maximumRange Int? // in Unit_types. If min preent then max doesnot means unlimated
+  unit  Unit_types?
 
   discountAmount Int
-  perQuantity    Float // in Unit_types
+  perQuantity    Float? // in Unit_types
   description    String
   startDate      DateTime
   endDate        DateTime
-  isActive    Boolean @default(true)
+  type           Promotion_types @default(WEIGHTED)
 
+  isActive  Boolean @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -107,8 +108,8 @@ model OrderItems {
   product     Products @relation(fields: [productId], references: [id])
   orderQuantity Float
   unitPrice   Float
-  discount    Float  // Discount for the individual product
-  totalPrice  Float  // Quantity * Unit Price - Discount
+  discount    Float  
+  totalPrice  Float 
 
   @@map("order_items")
 }
@@ -159,4 +160,10 @@ enum Unit_types {
   LITER
   METER
   PIECE
+}
+
+enum Promotion_types {
+  WEIGHTED
+  FIXED
+  PERCENTAGE
 }

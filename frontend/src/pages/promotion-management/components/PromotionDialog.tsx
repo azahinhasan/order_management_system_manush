@@ -19,16 +19,22 @@ import {
   IUpdatePromotionDto,
 } from "../../../common/interface";
 
-const unitOptions = ["KG", "lb", "LITER", "PIECE", "GRAM"];
+const unitOptions = ["GRAM"];
+const typesOptions = ["WEIGHTED", "FIXED", "PERCENTAGE"];
 
 interface PromotionDialogProps {
   open: boolean;
   onClose: () => void;
-  promotion?: any; 
+  promotion?: any;
   refetch: () => void;
 }
 
-const PromotionDialog: React.FC<PromotionDialogProps> = ({ open, onClose, promotion, refetch }) => {
+const PromotionDialog: React.FC<PromotionDialogProps> = ({
+  open,
+  onClose,
+  promotion,
+  refetch,
+}) => {
   const { showAlert } = useSnackbar();
   const mutation = useMutation({
     mutationFn: (values: ICreatePromotionDto | IUpdatePromotionDto) => {
@@ -72,16 +78,14 @@ const PromotionDialog: React.FC<PromotionDialogProps> = ({ open, onClose, promot
       endDate:
         promotion?.endDate.split("T")[0] ??
         new Date().toISOString().split("T")[0],
-      unit: promotion?.unit ?? "KG",
+      unit: promotion?.unit ?? "",
+      type: promotion?.type ?? "WEIGHTED",
     },
     enableReinitialize: true,
     validationSchema: Yup.object({
       title: Yup.string().required("Title is required"),
       secondTitle: Yup.string().required("Second title is required"),
-      minimumRange: Yup.number().required("Minimum range is required"),
-      maximumRange: Yup.number().required("Maximum range is required"),
       discountAmount: Yup.number().required("Discount amount is required"),
-      perQuantity: Yup.number().required("Per quantity is required"),
       description: Yup.string().required("Description is required"),
       startDate: Yup.date()
         .required("Start date is required")
@@ -89,11 +93,23 @@ const PromotionDialog: React.FC<PromotionDialogProps> = ({ open, onClose, promot
       endDate: Yup.date()
         .required("End date is required")
         .min(Yup.ref("startDate"), "End date cannot be before start date"),
+      type: Yup.string()
+        .oneOf(typesOptions, "Invalid type")
+        .required("Type is required"),
+//-----------------------------------------------------------------------//
+      minimumRange: Yup.number(),
+      maximumRange: Yup.number(),
+      perQuantity: Yup.number(),
       unit: Yup.string()
         .oneOf(unitOptions, "Invalid unit")
-        .required("Unit is required"),
     }),
     onSubmit: (values) => {
+      if (values.type !== "WEIGHTED") {
+        delete values.minimumRange;
+        delete values.maximumRange;
+        delete values.perQuantity;
+        delete values.unit;
+      }
       mutation.mutate(values);
     },
   });
@@ -132,12 +148,13 @@ const PromotionDialog: React.FC<PromotionDialogProps> = ({ open, onClose, promot
             />
           </Grid>
 
-          <Grid item  xs={12} sm={12}>
+          <Grid item xs={12} sm={12}>
             <CustomFields
               fullWidth
               label="Description"
               fieldType="textarea"
               margin="dense"
+              disabled={promotion}
               {...formik.getFieldProps("description")}
               error={
                 formik.touched.description && Boolean(formik.errors.description)
@@ -148,12 +165,30 @@ const PromotionDialog: React.FC<PromotionDialogProps> = ({ open, onClose, promot
             />
           </Grid>
 
+          <Grid item xs={12} sm={12}>
+            <CustomFields
+              fieldType="dropdown"
+              fullWidth
+              label="Type"
+              margin="dense"
+              disabled={promotion}
+              options={typesOptions.map((option) => ({
+                value: option,
+                label: option,
+              }))}
+              {...formik.getFieldProps("type")}
+              error={formik.touched.type && Boolean(formik.errors.type)}
+              helperText={formik.touched.type && formik.errors.type}
+            />
+          </Grid>
+
           <Grid item xs={6} sm={6}>
             <CustomFields
               fullWidth
               label="Min Range"
               fieldType="number"
               margin="dense"
+              disabled={promotion || formik.values.type !== "WEIGHTED"}
               {...formik.getFieldProps("minimumRange")}
               error={
                 formik.touched.minimumRange &&
@@ -171,6 +206,7 @@ const PromotionDialog: React.FC<PromotionDialogProps> = ({ open, onClose, promot
               label="Max Range"
               fieldType="number"
               margin="dense"
+              disabled={promotion || formik.values.type !== "WEIGHTED"}
               {...formik.getFieldProps("maximumRange")}
               error={
                 formik.touched.maximumRange &&
@@ -188,6 +224,7 @@ const PromotionDialog: React.FC<PromotionDialogProps> = ({ open, onClose, promot
               label="Discount Amount"
               fieldType="number"
               margin="dense"
+              disabled={promotion}
               {...formik.getFieldProps("discountAmount")}
               error={
                 formik.touched.discountAmount &&
@@ -205,6 +242,7 @@ const PromotionDialog: React.FC<PromotionDialogProps> = ({ open, onClose, promot
               label="Per Quantity"
               fieldType="number"
               margin="dense"
+              disabled={promotion || formik.values.type !== "WEIGHTED"}
               {...formik.getFieldProps("perQuantity")}
               error={
                 formik.touched.perQuantity && Boolean(formik.errors.perQuantity)
@@ -220,6 +258,7 @@ const PromotionDialog: React.FC<PromotionDialogProps> = ({ open, onClose, promot
               fullWidth
               label="Unit"
               margin="dense"
+              disabled={promotion || formik.values.type !== "WEIGHTED"}
               options={unitOptions.map((option) => ({
                 value: option,
                 label: option,
