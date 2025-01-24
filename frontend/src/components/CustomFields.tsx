@@ -2,7 +2,7 @@ import { TextField, MenuItem, TextFieldProps } from "@mui/material";
 import React from "react";
 
 interface CustomFieldsProps extends Omit<TextFieldProps, 'variant'> {
-  fieldType?: "text" | "password" | "textarea" | "dropdown" | "number";
+  fieldType?: "text" | "password" | "textarea" | "dropdown" | "number" | "date";
   options?: { value: string | number; label: string }[];
   label?: string;
   helperText: any;

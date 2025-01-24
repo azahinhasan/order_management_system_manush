@@ -4,6 +4,7 @@ import { RedisService } from 'src/modules/redis/redis.service';
 import { ActionLogger } from 'utils/action-logger';
 import { ErrorLogger } from 'utils/error-logger';
 import { CreatePromotionDto, UpdatePromotionDto } from './promotion.dto';
+import { PaginationDto } from 'src/lib/dtos/pagination.dto';
 
 @Injectable()
 export class PromotionService {
@@ -20,7 +21,7 @@ export class PromotionService {
       const promotion = await this.prisma.promotions.create({
         data: {
           ...dto,
-          createdBy: userId
+          createdBy: userId,
         },
       });
 
@@ -67,7 +68,6 @@ export class PromotionService {
         };
       }
 
-      // If no cache, fetch active promotions from the database
       const currentDate = new Date();
       const promotions = await this.prisma.promotions.findMany({
         where: {
@@ -77,16 +77,17 @@ export class PromotionService {
       });
 
       // Cache the promotions for future requests
-      promotions.length>0 && await this.redis.set(
-        'promotion',
-        'ACTIVE_PROMOTIONS',
-        JSON.stringify(promotions),
-      );
+      promotions.length > 0 &&
+        (await this.redis.set(
+          'promotion',
+          'ACTIVE_PROMOTIONS',
+          JSON.stringify(promotions),
+        ));
 
       return {
         status: 200,
         message: 'Promotions retrieved successfully',
-        data: promotions,
+        promotions,
       };
     } catch (error) {
       // Log the error
@@ -98,14 +99,24 @@ export class PromotionService {
     }
   }
 
-  async getPromotions() {
+  async getPromotions(pagination: PaginationDto) {
     try {
-      const promotions = await this.prisma.promotions.findMany({});
+      const { page, limit } = pagination;
+      const skip = (page - 1) * limit;
+      const promotions = await this.prisma.promotions.findMany({
+        skip,
+        take: limit,
+      });
+
+      const totalCount = await this.prisma.promotions.count({});
 
       return {
         status: 200,
         message: 'Promotions retrieved successfully',
-        data: promotions,
+        page,
+        limit,
+        totalCount,
+        promotions,
       };
     } catch (error) {
       return await this.errorLogger.errorlogger({
@@ -152,9 +163,7 @@ export class PromotionService {
       const updatedPromotion = await this.prisma.promotions.update({
         where: { id: promotionId },
         data: {
-          title: dto.title,
-          startDate: dto.startDate,
-          endDate: dto.endDate,
+          ...dto,
           updatedAt: new Date(),
         },
       });

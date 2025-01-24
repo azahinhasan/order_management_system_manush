@@ -66,40 +66,6 @@ export class UpdatePromotionDto {
   title?: string;
 
   @IsOptional()
-  @IsString()
-  @MaxLength(255)
-  secondTitle?: string;
-
-  @IsOptional()
-  @IsNumber()
-  @Min(0)
-  minimumRange?: number;
-
-  @IsOptional()
-  @IsNumber()
-  @Min(0)
-  maximumRange?: number;
-
-  @IsEnum(UnitTypes)
-  @IsOptional()
-  unit?: UnitTypes;
-
-  @IsOptional()
-  @IsNumber()
-  @Min(0)
-  discountAmount?: number;
-
-  @IsOptional()
-  @IsNumber()
-  @Min(0)
-  perQuantity?: number;
-
-  @IsOptional()
-  @IsString()
-  @MaxLength(1000)
-  description?: string;
-
-  @IsOptional()
   @IsDateString()
   startDate?: string;
 

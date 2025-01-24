@@ -1,3 +1,12 @@
+
+enum UnitTypes {
+  KILOGRAM = 'KILOGRAM',
+  GRAM = 'GRAM',
+  LITER = 'LITER',
+  MILLILITER = 'MILLILITER',
+  PIECE = 'PIECE',
+  PACK = 'PACK',
+}
 export interface IUpdateProductDto {
   name?: string;
   description?: string;
@@ -11,5 +20,26 @@ export interface ICreateProductDto {
   currentPrice: number;
   availableQuantity: number;
   isActive: boolean;
-  unit: string;
+  unit: UnitTypes;
+}
+
+export interface ICreatePromotionDto {
+  title: string;
+  secondTitle: string;
+  minimumRange: number;
+  maximumRange: number;
+  discountAmount: number;
+  perQuantity: number;
+  description: string;
+  startDate: string;
+  endDate: string;
+  isActive?: boolean;
+  unit: UnitTypes;
+}
+
+export interface IUpdatePromotionDto {
+  title?: string;
+  startDate?: string;
+  endDate?: string;
+  isActive?: boolean;
 }

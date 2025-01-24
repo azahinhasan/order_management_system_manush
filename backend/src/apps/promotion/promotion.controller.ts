@@ -8,6 +8,7 @@ import {
   Param,
   Res,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { PromotionService } from './promotion.service';
 import { GetIssuer } from 'src/decorators';
@@ -16,6 +17,7 @@ import { Response } from 'express';
 import { Users } from '@prisma/client';
 import { AuthGuard, RolesGuard } from '../../guards';
 import { Roles } from '../../decorators/roles.decorator';
+import { PaginationDto } from 'src/lib/dtos/pagination.dto';
 
 const allowedRolesMutation = [
   { role: 'MANAGER', context: 'MT' },
@@ -40,8 +42,8 @@ export class PromotionController {
   }
 
   @Get('list')
-  async getPromotions(@Res() res: Response) {
-    const result = await this.promotionService.getPromotions();
+  async getPromotions( @Query() pagination: PaginationDto,@Res() res: Response) {
+    const result = await this.promotionService.getPromotions(pagination);
     return res.status(result.status).json(result);
   }
 
@@ -65,6 +67,7 @@ export class PromotionController {
     @GetIssuer() issuer: Users,
     @Res() res: Response,
   ) {
+    console.log(id,dto)
     const result = await this.promotionService.updatePromotion(
       Number(id),
       dto,

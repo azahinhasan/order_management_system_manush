@@ -1,5 +1,5 @@
 import Cookies from "js-cookie";
-import { ICreateProductDto, IUpdateProductDto } from "./interface";
+import { ICreateProductDto, ICreatePromotionDto, IUpdateProductDto, IUpdatePromotionDto } from "./interface";
 
 const apiUrl = import.meta.env.VITE_SERVER_ENDPOINT + `/api/v1`;
 
@@ -93,7 +93,8 @@ export const deleteProductApi = async (id: number) => {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${Cookies.get("tokenId")}`,
+      authorization: `Bearer ${Cookies.get("tokenId")}`,
+      "x-refresh-token": `${Cookies.get("refreshTokenId")}`,
     },
   });
 
@@ -107,3 +108,106 @@ export const deleteProductApi = async (id: number) => {
 };
 
 // ******************** Promotion *********************** //
+
+export const promotionListApi = async (page?: number, limit?: number) => {
+  const response = await fetch(
+    `${apiUrl}/promotion/list?page=${page ?? 1}&limit=${limit ?? 10}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${Cookies.get("tokenId")}`,
+        "x-refresh-token": `${Cookies.get("refreshTokenId")}`,
+      },
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed");
+  }
+
+  return data;
+};
+
+export const availablePromotionListApi = async () => {
+  const response = await fetch(
+    `${apiUrl}/promotion/list/available`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${Cookies.get("tokenId")}`,
+        "x-refresh-token": `${Cookies.get("refreshTokenId")}`,
+      },
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed");
+  }
+
+  return data;
+};
+
+export const editPromotionApi = async (body: IUpdatePromotionDto, id: number) => {
+  const response = await fetch(`${apiUrl}/promotion/${id}`, {
+    method: "PUT",
+    body:JSON.stringify(body),
+    headers: {
+      "Content-Type": "application/json",
+      authorization: `Bearer ${Cookies.get("tokenId")}`,
+      "x-refresh-token": `${Cookies.get("refreshTokenId")}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed");
+  }
+
+  return data;
+};
+
+export const createPromotionApi = async (body: ICreatePromotionDto) => {
+  const response = await fetch(`${apiUrl}/promotion`, {
+    method: "POST",
+    body: JSON.stringify(body),
+    headers: {
+      "Content-Type": "application/json",
+      authorization: `Bearer ${Cookies.get("tokenId")}`,
+      "x-refresh-token": `${Cookies.get("refreshTokenId")}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed");
+  }
+
+  return data;
+};
+
+export const deletePromotionApi = async (id: number) => {
+  const response = await fetch(`${apiUrl}/promotion/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      authorization: `Bearer ${Cookies.get("tokenId")}`,
+      "x-refresh-token": `${Cookies.get("refreshTokenId")}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed");
+  }
+
+  return data;
+};

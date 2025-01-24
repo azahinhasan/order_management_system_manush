@@ -1,9 +1,10 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import NavBar from "../common/components/NavBar";
+import NavBar from "../components/NavBar";
 import Login from "./auth/login.page";
 import Cookies from "js-cookie";
 import Home from "./home/home.page";
 import ProductList from "./product-management/productList.page";
+import PromotionList from "./promotion-management/productList.page";
 
 const RoutesHandler = () => {
   const isAuthenticated = !!Cookies.get("tokenId");
@@ -40,6 +41,12 @@ const RoutesHandler = () => {
     {
       path: "/product-management",
       element: <ProductList />,
+      isProtected: true,
+      hasAccessRoles: ["ADMIN", "MANAGER", "DEVELOPER", "SUPER_ADMIN"],
+    },
+    {
+      path: "/promotion-management",
+      element: <PromotionList />,
       isProtected: true,
       hasAccessRoles: ["ADMIN", "MANAGER", "DEVELOPER", "SUPER_ADMIN"],
     },

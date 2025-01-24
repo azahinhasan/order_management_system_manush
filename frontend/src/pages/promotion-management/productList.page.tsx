@@ -17,19 +17,19 @@ import {
   Box,
 } from "@mui/material";
 import { useSnackbar } from "../../context/snack-bar.context";
-import { productListApi, editProductApi } from "../../common/api";
-import ProductDialog from "./components/ProductDialog";
+import { promotionListApi, editPromotionApi } from "../../common/api";
+import PromotionDialog from "./components/PromotionDialog";
 
-const ProductList = () => {
+const PromotionList = () => {
   const { showAlert } = useSnackbar();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(3);
   const [openDialog, setOpenDialog] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedPromotion, setSelectedPromotion] = useState(null);
 
   const { data, error, isLoading, refetch } = useQuery({
-    queryKey: ["productList"],
-    queryFn: () => productListApi(page + 1, rowsPerPage),
+    queryKey: ["promotionList"],
+    queryFn: () => promotionListApi(),
   });
 
   const statusUpdate = useMutation<
@@ -37,13 +37,13 @@ const ProductList = () => {
     unknown,
     { id: number; isActive: boolean }
   >({
-    mutationFn: ({ id, isActive }) => editProductApi({ isActive }, id),
+    mutationFn: ({ id, isActive }) => editPromotionApi({ isActive }, id),
     onSuccess: () => {
-      showAlert("Product status updated successfully", "success");
+      showAlert("Promotion status updated successfully", "success");
       refetch();
     },
     onError: () => {
-      showAlert("Failed to update product status", "error");
+      showAlert("Failed to update promotion status", "error");
     },
   });
 
@@ -54,7 +54,7 @@ const ProductList = () => {
   if (isLoading) return <CircularProgress />;
   if (error) {
     showAlert(error.message, "error");
-    return <Typography color="error">Failed to load products</Typography>;
+    return <Typography color="error">Failed to load promotions</Typography>;
   }
   console.log(data);
   return (
@@ -62,7 +62,7 @@ const ProductList = () => {
       <CardContent style={{marginTop: "20px"}}>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant="h5" gutterBottom>
-            Product List
+            Promotion List
           </Typography>
           <Button
             size="small"
@@ -70,7 +70,7 @@ const ProductList = () => {
             variant="outlined"
             color="primary"
             onClick={() => {
-              setSelectedProduct(null);
+              setSelectedPromotion(null);
               setOpenDialog(true);
             }}
           >
@@ -81,30 +81,30 @@ const ProductList = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>ID</TableCell>
-                <TableCell>Name</TableCell>
-                <TableCell>Price(per unit)</TableCell>
-                <TableCell>Available</TableCell>
+                <TableCell>Title</TableCell>
+                <TableCell>Price per Unit</TableCell>
+                <TableCell>Range</TableCell>
+                <TableCell>Offer Date</TableCell>
                 <TableCell>Active</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {data.products.map((product: any) => (
-                <TableRow key={product.id}>
-                  <TableCell>{product.id}</TableCell>
-                  <TableCell>{product.name}</TableCell>
-                  <TableCell>{product.currentPrice}</TableCell>
+              {data.promotions.map((promotion: any) => (
+                <TableRow key={promotion.id}>
+                  <TableCell>{promotion.title}</TableCell>
+                  <TableCell>{promotion.discountAmount} bdt / {promotion.perQuantity} {promotion.unit.toLowerCase()}</TableCell>
+                  <TableCell>{promotion.minimumRange} - {promotion.maximumRange}</TableCell>
                   <TableCell>
-                    {product.availableQuantity} {product.unit.toLowerCase()}
+                    {promotion.startDate.split("T")[0]} to {promotion.endDate.split("T")[0]}
                   </TableCell>
                   <TableCell>
                     <Switch
-                      checked={product.isActive}
+                      checked={promotion.isActive}
                       onChange={() =>
                         statusUpdate.mutate({
-                          id: product.id,
-                          isActive: !product.isActive,
+                          id: promotion.id,
+                          isActive: !promotion.isActive,
                         })
                       }
                     />
@@ -115,7 +115,7 @@ const ProductList = () => {
                       variant="outlined"
                       color="secondary"
                       onClick={() => {
-                        setSelectedProduct(product);
+                        setSelectedPromotion(promotion);
                         setOpenDialog(true);
                       }}
                     >
@@ -139,14 +139,14 @@ const ProductList = () => {
           }
         />
       </CardContent>
-      <ProductDialog
+      <PromotionDialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}
-        product={selectedProduct}
+        promotion={selectedPromotion}
         refetch={refetch}
       />
     </div>
   );
 };
 
-export default ProductList;
+export default PromotionList;
