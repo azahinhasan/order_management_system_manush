@@ -1,12 +1,12 @@
-import { createContext, useContext, useState, useMemo, ReactNode } from "react";
+import { createContext, useContext, ReactNode } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { availablePromotionListApi } from "../common/api"; // Assuming you have this API
 
 interface ProductContextType {
-  refetchAllProduct: boolean;
-  setRefetchAllProduct: (value: boolean) => void;
-  refetchMyAllProduct: boolean;
-  setRefetchMyAllProduct: (value: boolean) => void;
-  refetchTransaction: boolean;
-  setRefetchTransaction: (value: boolean) => void;
+  promotionData: any[];
+  promotionError: any;  
+  promotionLoading: boolean;
+  refetchPromotion: () => void;
 }
 
 const ProductContext = createContext<ProductContextType | undefined>(undefined);
@@ -20,22 +20,25 @@ export const useProductContext = () => {
 };
 
 export const ProductProvider = ({ children }: { children: ReactNode }) => {
-  const [refetchAllProduct, setRefetchAllProduct] = useState<boolean>(false);
-  const [refetchMyAllProduct, setRefetchMyAllProduct] = useState<boolean>(false);
-  const [refetchTransaction, setRefetchTransaction] = useState<boolean>(false);
-
-
-  const value = useMemo(() => ({
-    refetchAllProduct,
-    setRefetchAllProduct,
-    refetchMyAllProduct,
-    setRefetchMyAllProduct,
-    setRefetchTransaction,
-    refetchTransaction
-  }), [refetchAllProduct, refetchMyAllProduct,refetchTransaction]); 
+  const {
+    data: promotionData = [],    
+    error: promotionError,       
+    isLoading: promotionLoading, 
+    refetch: refetchPromotion,   
+  } = useQuery({
+    queryKey: ["promotionListAvaliable"], 
+    queryFn: availablePromotionListApi,
+  });
 
   return (
-    <ProductContext.Provider value={value}>
+    <ProductContext.Provider
+      value={{
+        promotionData:promotionData.data,
+        promotionError,
+        promotionLoading,
+        refetchPromotion,
+      }}
+    >
       {children}
     </ProductContext.Provider>
   );

@@ -90,7 +90,7 @@ const PromotionList = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {data.promotions.map((promotion: any) => (
+              {data.promotions?.map((promotion: any) => (
                 <TableRow key={promotion.id}>
                   <TableCell>{promotion.title}</TableCell>
                   <TableCell>{promotion.discountAmount} bdt / {promotion.perQuantity} {promotion.unit.toLowerCase()}</TableCell>
