@@ -21,7 +21,7 @@
     "prisma:generate": "npx prisma generate",
     "seed:run": "dotenv -e ./configs/.env.development -- npx prisma db seed",
     "seed:stage": "dotenv -e ./configs/.env.staging -- npx prisma db seed",
-    "run-docker":"npm run prisma:generate && npm run migrate:dev && npm run dev"
+    "run-docker":"npm run prisma:generate && npm run migrate:dev && npm run seed:run && npm run dev"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
