@@ -135,7 +135,17 @@ model ActionLog {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
-   @@map("actionLog")
+   @@map("action_logs")
+}
+
+model ErrorLogs {
+  id           Int      @id @default(autoincrement())
+  errorMessage String
+  errorStack   String
+  context      String
+  createdAt    DateTime @default(now())
+
+  @@map("error_logs")
 }
 
 

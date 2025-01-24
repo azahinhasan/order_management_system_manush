@@ -18,16 +18,40 @@ export class PromotionService {
   // Create a new promotion
   async createPromotion(dto: CreatePromotionDto, userId: number) {
     try {
+      if (dto.type === "WEIGHTED") {
+        const currentDate = new Date();
+        const overlappingPromotion = await this.prisma.promotions.findFirst({
+          where: {
+            type: "WEIGHTED",
+            unit: dto.unit,
+            endDate: { gte: currentDate },
+            AND: [
+              {
+                OR: [
+                  { minimumRange: { lte: dto.maximumRange }, maximumRange: { gte: dto.minimumRange } },
+                ],
+              },
+            ],
+          },
+        });
+        if (overlappingPromotion) {
+          return await this.errorLogger.errorlogger({
+            errorMessage: `A promotion already exists within the range ${overlappingPromotion.minimumRange} to ${overlappingPromotion.maximumRange}. Please choose a different range.`,
+            errorStack: ``,
+            context: 'PromotionService - createPromotion',
+          });
+        }
+      }
+  
       const promotion = await this.prisma.promotions.create({
         data: {
           ...dto,
           createdBy: userId,
         },
       });
-
-      // Invalidate Redis cache when a new promotion is created
+  
       await this.redis.delete('promotion', 'ACTIVE_PROMOTIONS');
-
+      
       await this.actionLogger.logAction(
         {
           referenceId: promotion.id,
@@ -39,7 +63,7 @@ export class PromotionService {
         },
         userId,
       );
-
+  
       return {
         status: 201,
         message: 'Promotion created successfully',
