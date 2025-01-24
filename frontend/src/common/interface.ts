@@ -23,6 +23,16 @@ export interface ICreateProductDto {
   unit: UnitTypes;
 }
 
+export interface IProductDto {
+  name: string;
+  description: string;
+  currentPrice: number;
+  availableQuantity: number;
+  isActive: boolean;
+  unit: string;
+  id:number;
+}
+
 export interface ICreatePromotionDto {
   title: string;
   secondTitle: string;

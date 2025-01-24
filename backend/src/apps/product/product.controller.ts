@@ -55,6 +55,7 @@ export class ProductController {
     );
     return res.status(result.status).json(result);
   }
+  
 
   @Get(':id')
   async getProductById(@Param('id') id: number, @Res() res: Response) {

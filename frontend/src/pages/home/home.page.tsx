@@ -7,6 +7,8 @@ import {
 } from "@mui/material";
 import Slider from "react-slick"; // Import react-slick
 import { useProductContext } from "../../context/product.context";
+import PromotionList from "../promotion-management/productList.page";
+import ProductForOrder from "./component/productForOrder";
 
 // Slick carousel settings
 const settings = {
@@ -101,6 +103,10 @@ const Home = () => {
           })}
         </Slider>
       )}
+
+      <ProductForOrder/>
+
+
     </div>
   );
 };
