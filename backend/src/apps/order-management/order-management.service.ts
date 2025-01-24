@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { ActionLogger } from 'utils/action-logger';
 import { ErrorLogger } from 'utils/error-logger';
-import { CreateOrderDto, UpdateOrderDto } from './order-management.dto';
+import { CreateOrderDto, OrderItemDto, UpdateOrderDto } from './order-management.dto';
 import { PaginationDto } from '../../lib/dtos/pagination.dto';
 
 @Injectable()
@@ -14,15 +14,13 @@ export class OrderManagementService {
   ) {}
 
   // Create a new order
-  async createOrder(dto: CreateOrderDto) {
+  async createOrder(dto: OrderItemDto[],userId: number) {
     try {
       const order = await this.prisma.orders.create({
         data: {
-          userId: dto.userId,
-          totalDiscount: 0,
-          grandTotal: 0,
+          userId,
           items: {
-            create: dto.items,
+            create: dto,
           },
         },
         include: { items: true },
@@ -38,7 +36,7 @@ export class OrderManagementService {
           description: `Order ${order.id} created`,
           additionalInfo: null,
         },
-        dto.userId
+        userId
       );
 
       return {

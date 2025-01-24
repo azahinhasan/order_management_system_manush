@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { OrderManagementService } from './order-management.service';
 import { GetIssuer } from 'src/decorators';
-import { CreateOrderDto, UpdateOrderDto } from './order-management.dto';
+import { CreateOrderDto, OrderItemDto, UpdateOrderDto } from './order-management.dto';
 import { Response } from 'express';
 import { Users } from '@prisma/client';
 import { AuthGuard, RolesGuard } from '../../guards';
@@ -34,11 +34,11 @@ export class OrderManagementController {
   @Post()
   @Roles(...allowedRolesMutation)
   async createOrder(
-    @Body() dto: CreateOrderDto,
-    @GetIssuer() issuer: Users,
+    @Body() dto: OrderItemDto[],
+    @GetIssuer() issuer: any,
     @Res() res: Response,
   ) {
-    const result = await this.orderService.createOrder(dto);
+    const result = await this.orderService.createOrder(dto, issuer.user.id);
     return res.status(result.status).json(result);
   }
 

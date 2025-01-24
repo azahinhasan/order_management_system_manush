@@ -31,7 +31,7 @@ const YesNoDialog: React.FC<YesNoDialogProps> = ({
         <Button onClick={onClose} color="primary">
           No
         </Button>
-        <Button onClick={onConfirm} color="primary">
+        <Button onClick={()=>onConfirm()} color="primary">
           Yes
         </Button>
       </DialogActions>

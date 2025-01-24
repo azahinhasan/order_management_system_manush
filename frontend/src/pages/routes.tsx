@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 import Home from "./home/home.page";
 import ProductList from "./product-management/productList.page";
 import PromotionList from "./promotion-management/productList.page";
+import PurchasePage from "./purchase/purchase.page";
 
 const RoutesHandler = () => {
   const isAuthenticated = !!Cookies.get("tokenId");
@@ -30,14 +31,24 @@ const RoutesHandler = () => {
   };
 
   const hasAccess = (roles: string[]) => {
-    if(roles.includes("PUBLICE")) return true
+    if (roles.includes("PUBLICE")) return true;
     const userRoles = Cookies.get("role");
     return userRoles && roles.includes(userRoles);
   };
 
   const routesConfig = [
-    { path: "/login", element: <Login />, isProtected: false,hasAccessRoles: ["PUBLICE"] },
-    { path: "/home", element: <Home />, isProtected: true, hasAccessRoles: ["PUBLICE"] },
+    {
+      path: "/login",
+      element: <Login />,
+      isProtected: false,
+      hasAccessRoles: ["PUBLICE"],
+    },
+    {
+      path: "/home",
+      element: <Home />,
+      isProtected: true,
+      hasAccessRoles: ["PUBLICE"],
+    },
     {
       path: "/product-management",
       element: <ProductList />,
@@ -49,6 +60,12 @@ const RoutesHandler = () => {
       element: <PromotionList />,
       isProtected: true,
       hasAccessRoles: ["ADMIN", "MANAGER", "DEVELOPER", "SUPER_ADMIN"],
+    },
+    {
+      path: "/confirm-purchase",
+      element: <PurchasePage />,
+      isProtected: true,
+      hasAccessRoles: ["PUBLICE"],
     },
   ];
 

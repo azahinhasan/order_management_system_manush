@@ -4,26 +4,24 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Button
+  Button,
 } from "@mui/material";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useSnackbar } from "../../../context/snack-bar.context";
 import CustomFields from "../../../components/CustomFields";
-
+import { IProductDto } from "../../../common/interface";
 
 interface ProductDialogProps {
   open: boolean;
   onClose: () => void;
-  productId: number;
-  unit: string;
+  product: IProductDto;
 }
 
 const AddSingleProductForOrder: React.FC<ProductDialogProps> = ({
   open,
   onClose,
-  productId,
-  unit,
+  product,
 }) => {
   const { showAlert } = useSnackbar();
 
@@ -32,25 +30,41 @@ const AddSingleProductForOrder: React.FC<ProductDialogProps> = ({
       orderQuantity: "",
     },
     enableReinitialize: true,
+
     validationSchema: Yup.object({
-      orderQuantity: Yup.string().required("Quantity is required"),
+      orderQuantity: Yup.number()
+        .typeError("Quantity must be a valid number")
+        .required("Quantity is required")
+        .min(1, "Quantity must be at least 1")
+        .max(
+          product.availableQuantity,
+          `Available quantity is ${product.availableQuantity}`
+        ),
     }),
     onSubmit: (values) => {
-
       const orderQuantity = parseInt(values.orderQuantity, 10);
       const storedOrders = localStorage.getItem("orders");
       const existingOrders = storedOrders ? JSON.parse(storedOrders) : [];
 
-      const existingIndex = existingOrders.findIndex((item:any) => item.productId === productId);
+      const existingIndex = existingOrders.findIndex(
+        (item: any) => item.productId === product.id
+      );
       if (existingIndex !== -1) {
-        showAlert('Product already added','error',)
+        showAlert("Product already added", "error");
       } else {
-        existingOrders.push({ productId, orderQuantity });
-        showAlert('Product added','success',)
-        onClose()
+        existingOrders.push({
+          productName: product.name,
+          productId: product.id,
+          unitPrice: product.currentPrice,
+          perUnit: product.perUnit,
+          unit: product.unit,
+          orderQuantity,
+        });
+        showAlert("Product added", "success");
+        formik.resetForm();
+        onClose();
       }
       localStorage.setItem("orders", JSON.stringify(existingOrders));
-
     },
   });
 
@@ -62,22 +76,29 @@ const AddSingleProductForOrder: React.FC<ProductDialogProps> = ({
       <DialogContent>
         <CustomFields
           fullWidth
-          label={"Quantity (in "+unit.toLocaleLowerCase()+")"}
+          label={"Quantity (in " + product.unit?.toLocaleLowerCase() + ")"}
           margin="dense"
           fieldType="number"
           {...formik.getFieldProps("orderQuantity")}
-          error={formik.touched.orderQuantity && Boolean(formik.errors.orderQuantity)}
-          helperText={formik.touched.orderQuantity && formik.errors.orderQuantity}
+          error={
+            formik.touched.orderQuantity && Boolean(formik.errors.orderQuantity)
+          }
+          helperText={
+            formik.touched.orderQuantity && formik.errors.orderQuantity
+          }
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="secondary">
+        <Button
+          onClick={() => {
+            onClose();
+            formik.resetForm();
+          }}
+          color="secondary"
+        >
           Cancel
         </Button>
-        <Button
-          onClick={() => formik.handleSubmit()}
-          color="primary"
-        >
+        <Button onClick={() => formik.handleSubmit()} color="primary">
           Add{" "}
         </Button>
       </DialogActions>

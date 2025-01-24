@@ -80,3 +80,25 @@ export interface IUpdatePromotionDto {
   endDate?: string;
   isActive?: boolean;
 }
+
+
+export interface IOrderItem {
+  productName?: string;
+  productId: number;
+  orderQuantity: number;
+  unitPrice: number;
+  weightedDiscount: number;
+  fixedDiscount: number;
+  percentageDiscount: number;
+  totalPrice: number;
+}
+
+export interface ICreateOrder {
+  userId?: number;
+  items: IOrderItem[];
+}
+
+export interface IUpdateOrder {
+  orderId: number;
+  items: IOrderItem[];
+}

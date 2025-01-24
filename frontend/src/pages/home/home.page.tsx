@@ -57,7 +57,7 @@ const Home = () => {
       {promotionLoading ? (
         <CircularProgress />
       ) : promotionError ? (
-        <div>No promotions</div>
+        null
       ) : (
         <Slider {...settings}>
           {promotionData?.map((promotion) => {

@@ -19,6 +19,7 @@ import { useSnackbar } from "../../../context/snack-bar.context";
 import { productListApi, editProductApi } from "../../../common/api";
 import AddSingleProductForOrder from "../../purchase/component/AddSingleProductForOrder";
 import { IProductDto } from "../../../common/interface";
+import { useNavigate } from "react-router-dom";
 
 const ProductForOrder = () => {
   const { showAlert } = useSnackbar();
@@ -26,12 +27,12 @@ const ProductForOrder = () => {
   const [rowsPerPage, setRowsPerPage] = useState(3);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<IProductDto>({});
+  const navigate = useNavigate();
 
   const { data, error, isLoading, refetch } = useQuery({
     queryKey: ["productForOrder"],
     queryFn: () => productListApi(page + 1, rowsPerPage),
   });
-
 
   useEffect(() => {
     refetch();
@@ -42,7 +43,6 @@ const ProductForOrder = () => {
     showAlert(error.message, "error");
     return <Typography color="error">Failed to load products</Typography>;
   }
-  console.log(data);
   return (
     <div>
       <CardContent style={{ marginTop: "20px" }}>
@@ -55,7 +55,7 @@ const ProductForOrder = () => {
             disabled={isLoading}
             variant="outlined"
             color="primary"
-            onClick={() => {}}
+            onClick={() => navigate("/confirm-purchase")}
           >
             Cart
           </Button>
@@ -76,7 +76,7 @@ const ProductForOrder = () => {
                 <TableRow key={product.id}>
                   <TableCell>{product.id}</TableCell>
                   <TableCell>{product.name}</TableCell>
-                  <TableCell>{product.currentPrice}</TableCell>
+                  <TableCell>{product.currentPrice} / {product.perUnit} {product.unit}</TableCell>
                   <TableCell>
                     {product.availableQuantity} {product.unit.toLowerCase()}
                   </TableCell>
@@ -113,8 +113,7 @@ const ProductForOrder = () => {
       <AddSingleProductForOrder
         open={openDialog}
         onClose={() => setOpenDialog(false)}
-        productId={selectedProduct.id??""}
-        unit={selectedProduct.unit??""}
+        product={selectedProduct}
       />
     </div>
   );

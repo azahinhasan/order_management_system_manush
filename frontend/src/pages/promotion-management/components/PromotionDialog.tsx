@@ -101,7 +101,7 @@ const PromotionDialog: React.FC<PromotionDialogProps> = ({
       //-----------------------------------------------------------------------//
       minimumRange: Yup.number()
         .min(0, "Minimum range must be at least 0")
-        .min(
+        .max(
           Yup.ref("maximumRange"),
           "Mix range cannot be more than Max range"
         ),

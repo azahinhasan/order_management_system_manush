@@ -1,5 +1,5 @@
 import Cookies from "js-cookie";
-import { ICreateProductDto, ICreatePromotionDto, IUpdateProductDto, IUpdatePromotionDto } from "./interface";
+import {ICreateOrder, ICreateProductDto, ICreatePromotionDto, IOrderItem, IUpdateProductDto, IUpdatePromotionDto } from "./interface";
 
 const apiUrl = import.meta.env.VITE_SERVER_ENDPOINT + `/api/v1`;
 
@@ -196,6 +196,29 @@ export const createPromotionApi = async (body: ICreatePromotionDto) => {
 export const deletePromotionApi = async (id: number) => {
   const response = await fetch(`${apiUrl}/promotion/${id}`, {
     method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      authorization: `Bearer ${Cookies.get("tokenId")}`,
+      "x-refresh-token": `${Cookies.get("refreshTokenId")}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed");
+  }
+
+  return data;
+};
+
+
+// ******************** Order *********************** //
+
+export const createOrderApi = async (body: IOrderItem[]) => {
+  const response = await fetch(`${apiUrl}/order`, {
+    method: "POST",
+    body: JSON.stringify(body),
     headers: {
       "Content-Type": "application/json",
       authorization: `Bearer ${Cookies.get("tokenId")}`,
