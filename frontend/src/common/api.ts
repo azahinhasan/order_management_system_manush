@@ -1,5 +1,5 @@
 import Cookies from "js-cookie";
-import {ICreateOrder, ICreateProductDto, ICreatePromotionDto, IOrderItem, IUpdateProductDto, IUpdatePromotionDto } from "./interface";
+import {ICreateProductDto, ICreatePromotionDto, IOrderItem, IUpdateProductDto, IUpdatePromotionDto } from "./interface";
 
 const apiUrl = import.meta.env.VITE_SERVER_ENDPOINT + `/api/v1`;
 

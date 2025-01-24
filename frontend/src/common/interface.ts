@@ -84,6 +84,8 @@ export interface IUpdatePromotionDto {
 
 export interface IOrderItem {
   productName?: string;
+  unit?: string;
+  perUnit?: number;
   productId: number;
   orderQuantity: number;
   unitPrice: number;

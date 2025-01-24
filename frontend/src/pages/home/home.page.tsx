@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { Card, CardContent, Typography, CircularProgress } from "@mui/material";
-import Slider from "react-slick"; // Import react-slick
+import Slider from "react-slick";
 import { useProductContext } from "../../context/product.context";
 import ProductForOrder from "./component/productForOrder";
 
@@ -36,7 +36,6 @@ const getRandomColor = () => {
 };
 
 const Home = () => {
-  const [openDialog, setOpenDialog] = useState(false);
   const { promotionData, promotionLoading, promotionError } =
     useProductContext();
 

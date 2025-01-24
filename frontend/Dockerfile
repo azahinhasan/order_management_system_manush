@@ -9,6 +9,6 @@ RUN npm install
 
 COPY . .
 
-EXPOSE 5179
+EXPOSE 3179
 
 CMD ["npm", "run", "buld-preview"]

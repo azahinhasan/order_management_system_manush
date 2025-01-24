@@ -37,8 +37,8 @@ const AddSingleProductForOrder: React.FC<ProductDialogProps> = ({
         .required("Quantity is required")
         .min(1, "Quantity must be at least 1")
         .max(
-          product.availableQuantity,
-          `Available quantity is ${product.availableQuantity}`
+          product?.availableQuantity,
+          `Available quantity is ${product?.availableQuantity}`
         ),
     }),
     onSubmit: (values) => {
@@ -57,7 +57,7 @@ const AddSingleProductForOrder: React.FC<ProductDialogProps> = ({
           productId: product.id,
           unitPrice: product.currentPrice,
           perUnit: product.perUnit,
-          unit: product.unit,
+          unit: product?.unit,
           orderQuantity,
         });
         showAlert("Product added", "success");
@@ -76,7 +76,7 @@ const AddSingleProductForOrder: React.FC<ProductDialogProps> = ({
       <DialogContent>
         <CustomFields
           fullWidth
-          label={"Quantity (in " + product.unit?.toLocaleLowerCase() + ")"}
+          label={"Quantity (in " + product?.unit?.toLocaleLowerCase() + ")"}
           margin="dense"
           fieldType="number"
           {...formik.getFieldProps("orderQuantity")}

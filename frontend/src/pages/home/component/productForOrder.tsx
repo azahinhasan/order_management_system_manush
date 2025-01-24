@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import {
   CardContent,
   Typography,
@@ -16,9 +16,8 @@ import {
   Box,
 } from "@mui/material";
 import { useSnackbar } from "../../../context/snack-bar.context";
-import { productListApi, editProductApi } from "../../../common/api";
+import { productListApi } from "../../../common/api";
 import AddSingleProductForOrder from "../../purchase/component/AddSingleProductForOrder";
-import { IProductDto } from "../../../common/interface";
 import { useNavigate } from "react-router-dom";
 
 const ProductForOrder = () => {
@@ -26,7 +25,7 @@ const ProductForOrder = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(3);
   const [openDialog, setOpenDialog] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<IProductDto>({});
+  const [selectedProduct, setSelectedProduct] = useState<any>();
   const navigate = useNavigate();
 
   const { data, error, isLoading, refetch } = useQuery({
