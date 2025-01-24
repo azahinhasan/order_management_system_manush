@@ -18,6 +18,7 @@ export interface IUpdateProductDto {
   name?: string;
   description?: string;
   currentPrice?: number;
+  perUnit?: number;
   availableQuantity?: number;
   isActive?: boolean;
 }
@@ -25,6 +26,7 @@ export interface ICreateProductDto {
   name: string;
   description: string;
   currentPrice: number;
+  perUnit: number;
   availableQuantity: number;
   isActive: boolean;
   unit: UnitTypes;
@@ -34,10 +36,26 @@ export interface IProductDto {
   name: string;
   description: string;
   currentPrice: number;
+  perUnit: number;
   availableQuantity: number;
   isActive: boolean;
   unit: string;
   id:number;
+}
+
+export interface IPromotionDto {
+  title: string;
+  secondTitle?: string;
+  minimumRange?: number;
+  maximumRange?: number;
+  discountAmount?: number;
+  perQuantity?: number;
+  description?: string;
+  startDate?: string;
+  endDate?: string;
+  isActive?: boolean;
+  unit?: UnitTypes;
+  type?: PromotionTypes
 }
 
 export interface ICreatePromotionDto {
@@ -54,6 +72,7 @@ export interface ICreatePromotionDto {
   unit: UnitTypes;
   type: PromotionTypes
 }
+
 
 export interface IUpdatePromotionDto {
   title?: string;

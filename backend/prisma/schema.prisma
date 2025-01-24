@@ -46,8 +46,9 @@ model Products {
   id          Int    @id @default(autoincrement())
   name        String
   description String
-  currentPrice       Float //per unit_type
-  availableQuantity   Float // in unit_type
+  currentPrice       Float //per perUnit
+  perUnit            Float
+  availableQuantity  Float // in unit_type
   unit  Unit_types
   isActive    Boolean @default(true)
 
@@ -107,9 +108,12 @@ model OrderItems {
   productId   Int
   product     Products @relation(fields: [productId], references: [id])
   orderQuantity Float
-  unitPrice   Float
-  discount    Float  
-  totalPrice  Float 
+  unitPrice     Float
+
+  weightedDiscount    Float  @default(0)
+  fixedDiscount       Float  @default(0)
+  percentageDiscount  Float  @default(0)
+  totalPrice          Float 
 
   @@map("order_items")
 }

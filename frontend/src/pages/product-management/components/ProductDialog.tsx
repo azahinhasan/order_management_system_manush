@@ -55,6 +55,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ open, onClose, product,re
       name: product?.name ?? "",
       description: product?.description ?? "",
       currentPrice: product?.currentPrice ?? "",
+      perUnit: product?.perUnit ?? "",
       availableQuantity: product?.availableQuantity ?? "",
       unit: product?.unit ?? "GRAM",
     },
@@ -63,6 +64,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ open, onClose, product,re
       name: Yup.string().required("Name is required"),
       description: Yup.string().required("Description is required"),
       currentPrice: Yup.number().required("Current price is required"),
+      perUnit: Yup.number().required("Per unit is required"),
       availableQuantity: Yup.number().required("Quantity is required"),
       unit: Yup.string().oneOf(unitOptions, "Invalid unit").required("Unit is required"),
     }),
@@ -92,18 +94,6 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ open, onClose, product,re
           <Grid item xs={12} sm={6}>
             <CustomFields
               fullWidth
-              label="Current Price"
-              fieldType="number"
-              margin="dense"
-              {...formik.getFieldProps("currentPrice")}
-              error={formik.touched.currentPrice && Boolean(formik.errors.currentPrice)}
-              helperText={formik.touched.currentPrice && formik.errors.currentPrice}
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={6}>
-            <CustomFields
-              fullWidth
               label="Available Quantity"
               fieldType="number"
               margin="dense"
@@ -113,7 +103,36 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ open, onClose, product,re
             />
           </Grid>
 
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={5}>
+            <CustomFields
+              fullWidth
+              label="Current Price"
+              fieldType="number"
+              margin="dense"
+              {...formik.getFieldProps("currentPrice")}
+              error={formik.touched.currentPrice && Boolean(formik.errors.currentPrice)}
+              helperText={formik.touched.currentPrice && formik.errors.currentPrice}
+            />
+          </Grid>
+          <Grid item xs={12} sm={2}>
+            <div style={{ marginTop: "25px", textAlign: "center" }}>
+            per
+            </div>
+            
+          </Grid>
+          <Grid item xs={12} sm={5}>
+            <CustomFields
+              fullWidth
+              label="Unit weight"
+              fieldType="number"
+              margin="dense"
+              {...formik.getFieldProps("perUnit")}
+              error={formik.touched.perUnit && Boolean(formik.errors.perUnit)}
+              helperText={formik.touched.perUnit && formik.errors.perUnit}
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={12}>
             <CustomFields
               fieldType="dropdown"
               fullWidth

@@ -58,8 +58,8 @@ const PromotionDialog: React.FC<PromotionDialogProps> = ({
       refetch();
       onClose();
     },
-    onError: () => {
-      showAlert("Failed to submit promotion", "error");
+    onError: (err) => {
+      showAlert(err.message || "Failed to submit promotion", "error");
     },
   });
 
@@ -85,7 +85,9 @@ const PromotionDialog: React.FC<PromotionDialogProps> = ({
     validationSchema: Yup.object({
       title: Yup.string().required("Title is required"),
       secondTitle: Yup.string().required("Second title is required"),
-      discountAmount: Yup.number().required("Discount amount is required"),
+      discountAmount: Yup.number()
+        .min(1, "Discount amount must be at least 1")
+        .required("Discount amount is required"),
       description: Yup.string().required("Description is required"),
       startDate: Yup.date()
         .required("Start date is required")
@@ -96,12 +98,18 @@ const PromotionDialog: React.FC<PromotionDialogProps> = ({
       type: Yup.string()
         .oneOf(typesOptions, "Invalid type")
         .required("Type is required"),
-//-----------------------------------------------------------------------//
-      minimumRange: Yup.number(),
-      maximumRange: Yup.number(),
-      perQuantity: Yup.number(),
-      unit: Yup.string()
-        .oneOf(unitOptions, "Invalid unit")
+      //-----------------------------------------------------------------------//
+      minimumRange: Yup.number()
+        .min(0, "Minimum range must be at least 0")
+        .min(
+          Yup.ref("maximumRange"),
+          "Mix range cannot be more than Max range"
+        ),
+      maximumRange: Yup.number()
+        .min(Yup.ref("minimumRange"), "Max range cannot be less than Min range")
+        .min(1, "Maximum range must be at least 1"),
+      perQuantity: Yup.number().min(1, "Per quantity must be at least 1"),
+      unit: Yup.string().oneOf(unitOptions, "Invalid unit"),
     }),
     onSubmit: (values) => {
       if (values.type !== "WEIGHTED") {

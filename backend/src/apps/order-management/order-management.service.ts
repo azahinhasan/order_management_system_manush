@@ -22,13 +22,7 @@ export class OrderManagementService {
           totalDiscount: 0,
           grandTotal: 0,
           items: {
-            create: dto.items.map(item => ({
-              productId: item.productId,
-              orderQuantity: item.orderQuantity,
-              unitPrice: 0, 
-              discount: 0,
-              totalPrice: 0,
-            })),
+            create: dto.items,
           },
         },
         include: { items: true },
@@ -145,13 +139,7 @@ export class OrderManagementService {
         data: {
           items: {
             deleteMany: {},
-            create: dto.items.map(item => ({
-              productId: item.productId,
-              orderQuantity: item.orderQuantity,
-              unitPrice: 0, 
-              discount: 0,
-              totalPrice: 0,
-            })),
+            create: dto.items,
           },
           updatedAt: new Date(),
         },

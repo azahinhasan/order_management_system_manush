@@ -94,7 +94,7 @@ const ProductList = () => {
                 <TableRow key={product.id}>
                   <TableCell>{product.id}</TableCell>
                   <TableCell>{product.name}</TableCell>
-                  <TableCell>{product.currentPrice}</TableCell>
+                  <TableCell>{product.currentPrice} / {product.perUnit} {product.unit}</TableCell>
                   <TableCell>
                     {product.availableQuantity} {product.unit.toLowerCase()}
                   </TableCell>

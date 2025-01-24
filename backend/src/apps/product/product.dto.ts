@@ -19,6 +19,9 @@ export class ProductDtoQuery {
   currentPrice: number;
 
   @IsNumber()
+  perUnit: number;
+
+  @IsNumber()
   weight: number;
 
   @IsNumber()
@@ -43,6 +46,10 @@ export class CreateProductDto {
   @IsNumber()
   @Min(0)
   currentPrice: number;
+
+  @IsNumber()
+  @Min(1)
+  perUnit: number;
 
   @IsNumber()
   @Min(0)
@@ -70,6 +77,11 @@ export class UpdateProductDto {
   @Min(0)
   currentPrice?: number;
 
+  @IsNumber()
+  @IsOptional()
+  @Min(1)
+  perUnit?: number;
+  
   @IsNumber()
   @IsOptional()
   @Min(0)
