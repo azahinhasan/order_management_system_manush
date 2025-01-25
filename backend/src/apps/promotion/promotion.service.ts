@@ -18,17 +18,20 @@ export class PromotionService {
   // Create a new promotion
   async createPromotion(dto: CreatePromotionDto, userId: number) {
     try {
-      if (dto.type === "WEIGHTED") {
+      if (dto.type === 'WEIGHTED') {
         const currentDate = new Date();
         const overlappingPromotion = await this.prisma.promotions.findFirst({
           where: {
-            type: "WEIGHTED",
+            type: 'WEIGHTED',
             unit: dto.unit,
             endDate: { gte: currentDate },
             AND: [
               {
                 OR: [
-                  { minimumRange: { lte: dto.maximumRange }, maximumRange: { gte: dto.minimumRange } },
+                  {
+                    minimumRange: { lte: dto.maximumRange },
+                    maximumRange: { gte: dto.minimumRange },
+                  },
                 ],
               },
             ],
@@ -42,16 +45,16 @@ export class PromotionService {
           });
         }
       }
-  
+
       const promotion = await this.prisma.promotions.create({
         data: {
           ...dto,
           createdBy: userId,
         },
       });
-  
+
       await this.redis.delete('promotion', 'ACTIVE_PROMOTIONS');
-      
+
       await this.actionLogger.logAction(
         {
           referenceId: promotion.id,
@@ -63,7 +66,7 @@ export class PromotionService {
         },
         userId,
       );
-  
+
       return {
         status: 201,
         message: 'Promotion created successfully',
@@ -88,7 +91,7 @@ export class PromotionService {
         return {
           status: 200,
           message: 'Promotions retrieved successfully (from cache)',
-          data: JSON.parse(cachedPromotions),
+          promotions: JSON.parse(cachedPromotions),
         };
       }
 
@@ -103,13 +106,22 @@ export class PromotionService {
         },
       });
 
-      // Cache the promotions for future requests
-      promotions.length > 0 &&
-        (await this.redis.set(
+      if (promotions.length > 0) {
+        // Set the cache to expire at 11:59 PM
+        const now = new Date();
+        const midnight = new Date(now);
+        midnight.setHours(23, 59, 59, 999);
+        const secondsUntilMidnight = Math.floor(
+          (midnight.getTime() - now.getTime()) / 1000,
+        );
+
+        await this.redis.set(
           'promotion',
           'ACTIVE_PROMOTIONS',
           JSON.stringify(promotions),
-        ));
+          secondsUntilMidnight,
+        );
+      }
 
       return {
         status: 200,

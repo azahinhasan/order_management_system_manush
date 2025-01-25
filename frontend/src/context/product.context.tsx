@@ -33,7 +33,7 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
   return (
     <ProductContext.Provider
       value={{
-        promotionData:promotionData.data,
+        promotionData:promotionData.promotions,
         promotionError,
         promotionLoading,
         refetchPromotion,
