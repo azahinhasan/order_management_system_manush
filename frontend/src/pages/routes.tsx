@@ -6,6 +6,7 @@ import Home from "./home/home.page";
 import ProductList from "./product-management/productList.page";
 import PromotionList from "./promotion-management/productList.page";
 import PurchasePage from "./purchase/purchase.page";
+import OrderList from "./order-management/orderList.page";
 
 const RoutesHandler = () => {
   const isAuthenticated = !!Cookies.get("tokenId");
@@ -58,6 +59,12 @@ const RoutesHandler = () => {
     {
       path: "/promotion-management",
       element: <PromotionList />,
+      isProtected: true,
+      hasAccessRoles: ["ADMIN", "MANAGER", "DEVELOPER", "SUPER_ADMIN"],
+    },
+    {
+      path: "/order-management",
+      element: <OrderList />,
       isProtected: true,
       hasAccessRoles: ["ADMIN", "MANAGER", "DEVELOPER", "SUPER_ADMIN"],
     },

@@ -39,10 +39,9 @@ const NavBar: React.FC = () => {
 
   const menuItems = [
     { text: "Home", path: "/home" },
-    { text: "Orders", path: "/orders" },
+    { text: "Orders", path: "/order-management" },
     { text: "Product Manage", path: "/product-management" },
     { text: "Promotion Manage", path: "/promotion-management" },
-
   ];
 
   return (

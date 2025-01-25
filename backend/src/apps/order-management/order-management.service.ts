@@ -52,24 +52,29 @@ export class OrderManagementService {
       });
     }
   }
-  
+
   async getOrders(pagination: PaginationDto) {
     try {
       const { page, limit } = pagination;
       const skip = (page - 1) * limit;
 
       const orders = await this.prisma.orders.findMany({
-        include: { items: true },
+        include: { items: {
+          include: { product: true },
+        }, user: true, },
         skip,
         take: limit,
       });
+
+      const totalCount = await this.prisma.orders.count();
 
       return {
         status: 200,
         message: 'Orders retrieved successfully',
         page,
         limit,
-        data: orders,
+        totalCount,
+        orders,
       };
     } catch (error) {
       return await this.errorLogger.errorlogger({
@@ -130,15 +135,13 @@ export class OrderManagementService {
     }
   }
 
-  async updateOrder(dto: UpdateOrderDto) {
+  async updateOrder(dto: UpdateOrderDto,orderId: number) {
+    console.log(dto,'dto')
     try {
       const updatedOrder = await this.prisma.orders.update({
-        where: { id: dto.orderId },
+        where: { id: orderId },
         data: {
-          items: {
-            deleteMany: {},
-            create: dto.items,
-          },
+          ...dto,
           updatedAt: new Date(),
         },
         include: { items: true },

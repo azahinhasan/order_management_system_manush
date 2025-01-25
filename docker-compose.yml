@@ -4,7 +4,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 1234
-      POSTGRES_DB: order_management_by_zahin_2
+      POSTGRES_DB: order_management_by_zahin
     ports:
       - "5432:5432"
     volumes:
@@ -27,7 +27,7 @@ services:
       - "3010:3010"
     environment:
       - TARGET_ENV=development
-      - DATABASE_URL=postgresql://postgres:1234@db:5432/order_management_by_zahin_2
+      - DATABASE_URL=postgresql://postgres:1234@db:5432/order_management_by_zahin
       - REDIS_HOST=redis
     depends_on:
       - db

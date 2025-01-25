@@ -97,10 +97,12 @@ export interface IOrderItem {
 
 export interface ICreateOrder {
   userId?: number;
+  status?: string;
   items: IOrderItem[];
 }
 
 export interface IUpdateOrder {
-  orderId: number;
-  items: IOrderItem[];
+  orderId?: number;
+  status?: string;
+  items?: IOrderItem[];
 }

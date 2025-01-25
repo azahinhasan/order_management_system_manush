@@ -8,11 +8,15 @@ import {
   Param,
   Res,
   UseGuards,
-  Query
+  Query,
 } from '@nestjs/common';
 import { OrderManagementService } from './order-management.service';
 import { GetIssuer } from 'src/decorators';
-import { CreateOrderDto, OrderItemDto, UpdateOrderDto } from './order-management.dto';
+import {
+  CreateOrderDto,
+  OrderItemDto,
+  UpdateOrderDto,
+} from './order-management.dto';
 import { Response } from 'express';
 import { Users } from '@prisma/client';
 import { AuthGuard, RolesGuard } from '../../guards';
@@ -43,7 +47,8 @@ export class OrderManagementController {
   }
 
   @Get('list')
-  async getOrders(@Query() pagination: PaginationDto,@Res() res: Response) {
+  @Roles(...allowedRolesMutation)
+  async getOrders(@Query() pagination: PaginationDto, @Res() res: Response) {
     const result = await this.orderService.getOrders(pagination);
     return res.status(result.status).json(result);
   }
@@ -68,10 +73,7 @@ export class OrderManagementController {
     @GetIssuer() issuer: Users,
     @Res() res: Response,
   ) {
-    const result = await this.orderService.updateOrder({
-      orderId: Number(id),
-      items: dto.items,
-    });
+    const result = await this.orderService.updateOrder(dto,Number(id));
     return res.status(result.status).json(result);
   }
 

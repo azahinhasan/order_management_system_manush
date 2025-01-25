@@ -1,4 +1,4 @@
-import { IsInt, IsNotEmpty, IsPositive, IsArray, ValidateNested, IsNumber, Min, IsOptional } from 'class-validator';
+import { IsInt, IsNotEmpty, IsPositive, IsArray, ValidateNested, IsNumber, Min, IsOptional, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class OrderItemDto {
@@ -55,11 +55,26 @@ export class CreateOrderDto {
 export class UpdateOrderDto {
   @IsInt()
   @IsPositive()
-  orderId: number;
+  @IsOptional()
+  orderId?: number;
 
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => OrderItemDto)
-  items: OrderItemDto[];
+  @IsString()
+  @IsOptional()
+  status?: OrderStatus;
+
+  // @IsArray()
+  // @IsOptional()
+  // @ValidateNested({ each: true })
+  // @Type(() => OrderItemDto)
+  // items?: OrderItemDto[];
 }
 
+export enum OrderStatus {
+  PENDING = "PENDING",
+  PROCESSING = "PROCESSING",
+  COMPLETED = "COMPLETED",
+  CANCELLED = "CANCELLED",
+}
+
+//COMPLETED
+//DELIVERED
