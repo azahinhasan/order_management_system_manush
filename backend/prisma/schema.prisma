@@ -163,7 +163,7 @@ enum Role_names {
 enum Order_status {
   PENDING
   PROCESSING
-  COMPLETED
+  DELIVERED
   CANCELLED
 }
 

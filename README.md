@@ -61,3 +61,27 @@ Ensure the following are installed:
       ```
       The frontend will be accessible at `http://localhost:3179`.
 
+---
+
+## Additional Information
+
+### Default Credentials
+
+```
+  {
+    email:'admin@test.test
+    password:'123456',
+    role:'SUPER_ADMIN'
+  },
+  {
+    email:'manager@test.test
+    password:'123456',
+    role:'MANAGER'
+  },
+  {
+    email:'user@test.test
+    password:'123456',
+    role:'USER'
+  }
+
+```
