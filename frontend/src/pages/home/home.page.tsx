@@ -40,7 +40,6 @@ const Home = () => {
     useProductContext();
 
   useEffect(() => {
-    console.log(promotionData, "promotionData");
     if (!promotionLoading) {
       if (promotionError) {
         console.error("Error loading promotions:", promotionError);

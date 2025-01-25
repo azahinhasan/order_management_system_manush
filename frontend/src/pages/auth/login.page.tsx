@@ -22,7 +22,6 @@ const Login = () => {
   const { mutate,isPending} = useMutation({
     mutationFn: loginApi,
     onSuccess: (res) => {
-      console.log(res);
       if (res.status===200) {
         Cookies.set("refreshTokenId", res.data.refreshTokenId);
         Cookies.set("tokenId", res.data.tokenId);

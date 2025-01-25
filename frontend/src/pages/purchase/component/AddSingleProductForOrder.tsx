@@ -68,8 +68,6 @@ const AddSingleProductForOrder: React.FC<ProductDialogProps> = ({
     },
   });
 
-  console.log(formik.values);
-
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
       <DialogTitle>Add Product</DialogTitle>

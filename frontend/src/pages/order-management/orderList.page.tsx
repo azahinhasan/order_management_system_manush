@@ -53,7 +53,6 @@ const OrderList = () => {
 
   useEffect(() => {
     refetch();
-    console.log(data, "datadata");
   }, [page, rowsPerPage]);
 
   if (isLoading) return <CircularProgress />;

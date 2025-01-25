@@ -23,19 +23,23 @@ const PurchasePage = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const { promotionData, promotionLoading, promotionError } =
     useProductContext();
-  const [discountedProducts, setDiscountedProducts] = useState<IOrderItem[]>([]);
-
-
+  const [discountedProducts, setDiscountedProducts] = useState<IOrderItem[]>(
+    []
+  );
 
   const mutation = useMutation({
-    mutationFn:()=> createOrderApi(discountedProducts.map(product=>{
-      delete product.productName;
-      return product;
-    })),
+    mutationFn: () =>
+      createOrderApi(
+        discountedProducts.map((product) => {
+          delete product.productName;
+          delete product.unit;
+          return product;
+        })
+      ),
     onSuccess: () => {
       showAlert("Order created successfully", "success");
       setDiscountedProducts([]);
-      localStorage.removeItem("orders")
+      localStorage.removeItem("orders");
     },
     onError: (err) => {
       showAlert(err.message || "Failed to create order", "error");
@@ -45,7 +49,7 @@ const PurchasePage = () => {
   function applyPromotionToOrder(promotion: any[], products: any[]): any[] {
     const tempDiscountedProducts: any[] = [];
     const byWeight = promotion?.filter((el) => el.type === "WEIGHTED");
-    
+
     products.forEach((product) => {
       const matchedSlab = byWeight?.find(
         (el) =>
@@ -55,6 +59,8 @@ const PurchasePage = () => {
 
       let weightedDiscount = 0;
       let totalPrice = 0;
+      const fixedDiscount = 0;
+      const percentageDiscount = 0;
       if (matchedSlab) {
         totalPrice =
           (product.orderQuantity * product.unitPrice) / product.perUnit;
@@ -64,11 +70,12 @@ const PurchasePage = () => {
       }
       tempDiscountedProducts.push({
         ...product,
-        weightedDiscount,
-        totalPrice,
+        weightedDiscount: parseFloat(weightedDiscount.toFixed(2)),
+        totalPrice: parseFloat(totalPrice.toFixed(2)),
+        fixedDiscount: parseFloat(fixedDiscount.toFixed(2)),
+        percentageDiscount: parseFloat(percentageDiscount.toFixed(2)),
       });
     });
-
     return tempDiscountedProducts;
   }
 
@@ -81,15 +88,19 @@ const PurchasePage = () => {
     }
   }, [promotionData, promotionLoading, promotionError]);
 
-  const removeItemHandler = (id:number) => {
-    setDiscountedProducts(prevState => prevState.filter(item => item.productId !== id));
+  const removeItemHandler = (id: number) => {
+    setDiscountedProducts((prevState) =>
+      prevState.filter((item) => item.productId !== id)
+    );
     const storedOrders = localStorage.getItem("orders");
     if (storedOrders) {
       const orders = JSON.parse(storedOrders);
-      const filteredOrders = orders.filter((order: any) => order.productId !== id);
+      const filteredOrders = orders.filter(
+        (order: any) => order.productId !== id
+      );
       localStorage.setItem("orders", JSON.stringify(filteredOrders));
     }
-  }
+  };
 
   if (promotionLoading) {
     return (
@@ -139,14 +150,16 @@ const PurchasePage = () => {
                     {product.orderQuantity} {product.unit}
                   </TableCell>
                   <TableCell>{product.totalPrice}</TableCell>
-                  <TableCell>
-                    {product.weightedDiscount}
-                  </TableCell>
+                  <TableCell>{product.weightedDiscount}</TableCell>
                   <TableCell>
                     {product.totalPrice - product.weightedDiscount}
                   </TableCell>
                   <TableCell>
-                    <Button variant="outlined" color="error" onClick={() => removeItemHandler(product.productId)}>
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      onClick={() => removeItemHandler(product.productId)}
+                    >
                       X
                     </Button>
                   </TableCell>
@@ -158,30 +171,47 @@ const PurchasePage = () => {
                 </TableCell>
                 <TableCell>
                   <strong>
-                    {discountedProducts.reduce(
-                      (sum, product) => sum + product.totalPrice,
-                      0
-                    )} tk
+                    {parseFloat(
+                      discountedProducts
+                        .reduce((sum, product) => sum + product.totalPrice, 0)
+                        .toFixed(2)
+                    )}{" "}
+                    tk
                   </strong>
                 </TableCell>
                 <TableCell>
                   <strong>
-                    {discountedProducts.reduce(
-                      (sum, product) => sum + product.weightedDiscount,
-                      0
-                    )}
+                    {parseFloat(
+                      discountedProducts
+                        .reduce(
+                          (sum, product) => sum + product.weightedDiscount,
+                          0
+                        )
+                        .toFixed(2)
+                    )}{" "}
+                    tk
                   </strong>
                 </TableCell>
                 <TableCell>
                   <strong>
-                    {discountedProducts.reduce(
-                      (sum, product) => sum + (product.totalPrice - product.weightedDiscount),
-                      0
-                    )} tk
+                    {parseFloat(
+                      discountedProducts
+                        .reduce(
+                          (sum, product) =>
+                            sum +
+                            (product.totalPrice - product.weightedDiscount),
+                          0
+                        )
+                        .toFixed(2)
+                    )}{" "}
+                    tk
                   </strong>
                 </TableCell>
                 <TableCell>
-                  <Button variant="outlined" onClick={() => setOpenDialog(true)}>
+                  <Button
+                    variant="outlined"
+                    onClick={() => setOpenDialog(true)}
+                  >
                     Confirm
                   </Button>
                 </TableCell>
@@ -205,4 +235,3 @@ const PurchasePage = () => {
 };
 
 export default PurchasePage;
-

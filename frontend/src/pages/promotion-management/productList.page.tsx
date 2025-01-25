@@ -56,7 +56,6 @@ const PromotionList = () => {
     showAlert(error.message, "error");
     return <Typography color="error">Failed to load promotions</Typography>;
   }
-  console.log(data);
   return (
     <div>
       <CardContent style={{ marginTop: "20px" }}>

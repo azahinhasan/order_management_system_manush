@@ -67,7 +67,6 @@ export class PromotionController {
     @GetIssuer() issuer: Users,
     @Res() res: Response,
   ) {
-    console.log(id,dto)
     const result = await this.promotionService.updatePromotion(
       Number(id),
       dto,

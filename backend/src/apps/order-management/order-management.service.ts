@@ -26,7 +26,17 @@ export class OrderManagementService {
         include: { items: true },
       });
 
-
+      //reducing proudcts quantity
+      for (const item of dto) {
+        await this.prisma.products.update({
+          where: { id: item.productId },
+          data: {
+            availableQuantity: {
+              decrement: item.orderQuantity,
+            },
+          },
+        });
+      }
       await this.actionLogger.logAction(
         {
           referenceId: order.id,
@@ -136,7 +146,6 @@ export class OrderManagementService {
   }
 
   async updateOrder(dto: UpdateOrderDto,orderId: number) {
-    console.log(dto,'dto')
     try {
       const updatedOrder = await this.prisma.orders.update({
         where: { id: orderId },

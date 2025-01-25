@@ -27,7 +27,6 @@ interface ProductDialogProps {
 
 const ProductDialog: React.FC<ProductDialogProps> = ({ open, onClose, product,refetch }) => {
   const { showAlert } = useSnackbar();
-  console.log(product, "product");
   const mutation = useMutation({
     mutationFn: (values: ICreateProductDto | IUpdateProductDto) => {
       if (product) {
@@ -72,8 +71,6 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ open, onClose, product,re
       mutation.mutate(values);
     },
   });
-
-  console.log(formik.values);
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">

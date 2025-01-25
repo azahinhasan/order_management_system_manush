@@ -56,7 +56,6 @@ const ProductList = () => {
     showAlert(error.message, "error");
     return <Typography color="error">Failed to load products</Typography>;
   }
-  console.log(data);
   return (
     <div>
       <CardContent style={{marginTop: "20px"}}>
