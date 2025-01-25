@@ -69,17 +69,17 @@ Ensure the following are installed:
 
 ```
   {
-    email:'admin@test.test
+    email:'admin@test.test'
     password:'123456',
     role:'SUPER_ADMIN'
   },
   {
-    email:'manager@test.test
+    email:'manager@test.test'
     password:'123456',
     role:'MANAGER'
   },
   {
-    email:'user@test.test
+    email:'user@test.test'
     password:'123456',
     role:'USER'
   }
