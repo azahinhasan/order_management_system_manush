@@ -72,9 +72,6 @@ export class UpdateOrderDto {
 export enum OrderStatus {
   PENDING = "PENDING",
   PROCESSING = "PROCESSING",
-  COMPLETED = "COMPLETED",
+  DELIVERED = "DELIVERED",
   CANCELLED = "CANCELLED",
 }
-
-//COMPLETED
-//DELIVERED

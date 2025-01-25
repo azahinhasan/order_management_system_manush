@@ -58,7 +58,7 @@ export class ProductService {
         skip,
         take: limit,
         orderBy: {
-          createdAt: 'desc',
+          id: 'desc',
         },
       });
       const totalCount = await this.prisma.products.count({

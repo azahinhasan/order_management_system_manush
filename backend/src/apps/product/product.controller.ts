@@ -21,6 +21,7 @@ import { Roles } from '../../decorators/roles.decorator';
 import { PaginationDto } from '../../lib/dtos/pagination.dto';
 
 const allowedRolesMutation = [
+  { role: 'SUPER_ADMIN', context: 'MT' },
   { role: 'MANAGER', context: 'MT' },
   { role: 'ADMIN', context: 'MT' },
   { role: 'DEVELOPER', context: 'MT' },
@@ -28,12 +29,11 @@ const allowedRolesMutation = [
 
 @Controller('product')
 @UseGuards(AuthGuard, RolesGuard)
-@Roles({ role: 'SUPER_ADMIN', context: 'MT' })
+@Roles(...allowedRolesMutation)
 export class ProductController {
   constructor(private productService: ProductService) {}
 
   @Post()
-  @Roles(...allowedRolesMutation)
   async createProduct(
     @Body() dto: CreateProductDto,
     @GetIssuer() issuer: any,
@@ -44,6 +44,7 @@ export class ProductController {
   }
 
   @Get('list')
+  @Roles({ role: 'USER', context: 'CLIENT' })
   async getProducts(
     @Query() pagination: PaginationDto,
     @Res() res: Response,
@@ -64,7 +65,6 @@ export class ProductController {
   }
 
   @Put(':id')
-  @Roles(...allowedRolesMutation)
   async updateProduct(
     @Param('id') id: number,
     @Body() dto: UpdateProductDto,
@@ -80,7 +80,6 @@ export class ProductController {
   }
 
   @Delete(':id')
-  @Roles({ role: 'SUPER_ADMIN', context: 'MT' })
   async deleteProduct(
     @Param('id') id: number,
     @GetIssuer() issuer: Users,

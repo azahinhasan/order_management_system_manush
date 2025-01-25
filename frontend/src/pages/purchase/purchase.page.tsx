@@ -58,16 +58,15 @@ const PurchasePage = () => {
       );
 
       let weightedDiscount = 0;
-      let totalPrice = 0;
+      const totalPrice = (product.orderQuantity * product.unitPrice) / product.perUnit;;
       const fixedDiscount = 0;
       const percentageDiscount = 0;
       if (matchedSlab) {
-        totalPrice =
-          (product.orderQuantity * product.unitPrice) / product.perUnit;
         weightedDiscount =
           (product.orderQuantity * matchedSlab.discountAmount) /
           matchedSlab.perQuantity;
       }
+
       tempDiscountedProducts.push({
         ...product,
         weightedDiscount: parseFloat(weightedDiscount.toFixed(2)),
@@ -134,7 +133,7 @@ const PurchasePage = () => {
                 <TableCell>Unit Price (tk)</TableCell>
                 <TableCell>Order Quantity</TableCell>
                 <TableCell>Total Price (tk)</TableCell>
-                <TableCell>Discount</TableCell>
+                <TableCell>Discount (w+f+p)</TableCell>
                 <TableCell>Price After Discount</TableCell>
                 <TableCell>Action</TableCell>
               </TableRow>
@@ -150,7 +149,7 @@ const PurchasePage = () => {
                     {product.orderQuantity} {product.unit}
                   </TableCell>
                   <TableCell>{product.totalPrice}</TableCell>
-                  <TableCell>{product.weightedDiscount}</TableCell>
+                  <TableCell>{product.weightedDiscount}+{product.fixedDiscount}+{product.percentageDiscount}</TableCell>
                   <TableCell>
                     {product.totalPrice - product.weightedDiscount}
                   </TableCell>

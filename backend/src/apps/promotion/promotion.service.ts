@@ -83,6 +83,8 @@ export class PromotionService {
 
   async getAvailablePromotions() {
     try {
+      await this.redis.delete('promotion', 'ACTIVE_PROMOTIONS');
+
       const cachedPromotions = await this.redis.get(
         'promotion',
         'ACTIVE_PROMOTIONS',
@@ -102,7 +104,7 @@ export class PromotionService {
           endDate: { gte: currentDate },
         },
         orderBy: {
-          createdAt: 'desc',
+          id: 'desc',
         },
       });
 
@@ -146,7 +148,7 @@ export class PromotionService {
         skip,
         take: limit,
         orderBy: {
-          createdAt: 'desc',
+          id: 'desc',
         },
       });
 

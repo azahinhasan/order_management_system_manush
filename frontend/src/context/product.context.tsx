@@ -26,7 +26,7 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
     isLoading: promotionLoading, 
     refetch: refetchPromotion,   
   } = useQuery({
-    queryKey: ["promotionList"], 
+    queryKey: ["availablePromotionList"], 
     queryFn: availablePromotionListApi,
   });
 

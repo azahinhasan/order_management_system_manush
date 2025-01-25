@@ -23,15 +23,16 @@ const allowedRolesMutation = [
   { role: 'MANAGER', context: 'MT' },
   { role: 'ADMIN', context: 'MT' },
   { role: 'DEVELOPER', context: 'MT' },
+  { role: 'SUPER_ADMIN', context: 'MT' },
 ];
 
 @Controller('promotion')
 @UseGuards(AuthGuard, RolesGuard)
+@Roles(...allowedRolesMutation)
 export class PromotionController {
   constructor(private promotionService: PromotionService) {}
 
   @Post()
-  @Roles(...allowedRolesMutation)
   async createPromotion(
     @Body() dto: CreatePromotionDto,
     @GetIssuer() issuer: any,
@@ -48,6 +49,7 @@ export class PromotionController {
   }
 
   @Get('list/available')
+  @Roles({ role: 'USER', context: 'CLIENT' })
   async getAvailablePromotions(@Res() res: Response) {
     const result = await this.promotionService.getAvailablePromotions();
     return res.status(result.status).json(result);
@@ -60,7 +62,6 @@ export class PromotionController {
   }
 
   @Put(':id')
-  @Roles(...allowedRolesMutation)
   async updatePromotion(
     @Param('id') id: number,
     @Body() dto: UpdatePromotionDto,
@@ -76,7 +77,6 @@ export class PromotionController {
   }
 
   @Delete(':id')
-  @Roles({ role: 'SUPER_ADMIN', context: 'MT' })
   async deletePromotion(
     @Param('id') id: number,
     @GetIssuer() issuer: Users,

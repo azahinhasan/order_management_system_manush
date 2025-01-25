@@ -24,6 +24,7 @@ import { Roles } from '../../decorators/roles.decorator';
 import { PaginationDto } from '../../lib/dtos/pagination.dto';
 
 const allowedRolesMutation = [
+  { role: 'SUPER_ADMIN', context: 'MT' },
   { role: 'MANAGER', context: 'MT' },
   { role: 'ADMIN', context: 'MT' },
   { role: 'DEVELOPER', context: 'MT' },
@@ -31,12 +32,12 @@ const allowedRolesMutation = [
 
 @Controller('order')
 @UseGuards(AuthGuard, RolesGuard)
-@Roles({ role: 'SUPER_ADMIN', context: 'MT' })
+
 export class OrderManagementController {
   constructor(private orderService: OrderManagementService) {}
 
   @Post()
-  @Roles(...allowedRolesMutation)
+  @Roles({ role: 'USER', context: 'CLIENT' })
   async createOrder(
     @Body() dto: OrderItemDto[],
     @GetIssuer() issuer: any,
@@ -47,7 +48,6 @@ export class OrderManagementController {
   }
 
   @Get('list')
-  @Roles(...allowedRolesMutation)
   async getOrders(@Query() pagination: PaginationDto, @Res() res: Response) {
     const result = await this.orderService.getOrders(pagination);
     return res.status(result.status).json(result);
@@ -66,7 +66,6 @@ export class OrderManagementController {
   }
 
   @Put(':id')
-  @Roles(...allowedRolesMutation)
   async updateOrder(
     @Param('id') id: number,
     @Body() dto: UpdateOrderDto,
@@ -78,7 +77,6 @@ export class OrderManagementController {
   }
 
   @Delete(':id')
-  @Roles({ role: 'Admin', context: 'MT' })
   async deleteOrder(
     @Param('id') id: number,
     @GetIssuer() issuer: Users,
